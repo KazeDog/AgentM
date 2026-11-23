@@ -1,0 +1,8 @@
+extends: clean_matrix.yaml
+matrix:
+  orchestrators: [heuristic, llm]
+  reflection: [false]
+outputs:
+  root: outputs/agentm_reliability_strict_smoke
+paths:
+  outputs_root: outputs/agentm_reliability_strict_smoke

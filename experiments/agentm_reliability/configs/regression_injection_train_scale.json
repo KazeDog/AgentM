@@ -1,0 +1,73 @@
+{
+  "pilot_informed_protocol_development": true,
+  "profiles": {
+    "LD50_Zhu": {
+      "candidate_values": [
+        1.274,
+        1.819,
+        2.3525,
+        3.048,
+        4.507299999999999
+      ],
+      "data_path": "data/tdc/LD50_Zhu/LD50_Zhu.csv",
+      "data_sha256": "689cff13021165fd93d653ddcd10cd7f6964dd1329c787004bcf50e113f6261d",
+      "iqr": 1.229,
+      "minimum_separation": 0.6145,
+      "mode": "regression",
+      "model_path": "outputs/tdc/LD50_Zhu/model.pkl",
+      "model_sha256": "5181537423ca5e9310feded1ad7a4dab5e6de37d1f15dffa09e7d133f9518d5a",
+      "quantile_probabilities": [
+        0.05,
+        0.25,
+        0.5,
+        0.75,
+        0.95
+      ],
+      "reproducibility_path": "outputs/tdc/LD50_Zhu/reproducibility.json",
+      "reproducibility_sha256": "25937976af9f530d5bc054a50d1835992b8151bb0c5de77fa9aebc48cfd1ed80",
+      "scale_fit_split": "train",
+      "split_seed": 13,
+      "split_strategy": "scaffold",
+      "test_or_pilot_values_used_for_scale": false,
+      "training_label_count": 5908,
+      "training_rows_sha256": "edd99b0cb7b67782be2a16fba2a64ef3bf4212544d8fd5bcaedc9253a9f85956",
+      "training_source": "deterministic_split_reconstruction:outputs/tdc/LD50_Zhu",
+      "unit": "dataset_native_target_units"
+    },
+    "Lipophilicity_AstraZeneca": {
+      "candidate_values": [
+        -0.15,
+        1.38,
+        2.335,
+        3.1,
+        3.870499999999997
+      ],
+      "data_path": "data/tdc/Lipophilicity_AstraZeneca/Lipophilicity_AstraZeneca.csv",
+      "data_sha256": "1d723309c66c77f5ae12a05ce234d2c7b04c4af989a8cbb31fe37540e44e8a50",
+      "iqr": 1.7200000000000002,
+      "minimum_separation": 0.8600000000000001,
+      "mode": "regression",
+      "model_path": "outputs/tdc/Lipophilicity_AstraZeneca/model.pkl",
+      "model_sha256": "c4e11ea210794639566716131162b768d36bd7e329e19cc10b574a734a5f94d6",
+      "quantile_probabilities": [
+        0.05,
+        0.25,
+        0.5,
+        0.75,
+        0.95
+      ],
+      "reproducibility_path": "outputs/tdc/Lipophilicity_AstraZeneca/reproducibility.json",
+      "reproducibility_sha256": "614033294cabc71aeec9d657fa2b73990d7251b5246d6cf5eace1b8ac43770a8",
+      "scale_fit_split": "train",
+      "split_seed": 13,
+      "split_strategy": "scaffold",
+      "test_or_pilot_values_used_for_scale": false,
+      "training_label_count": 3360,
+      "training_rows_sha256": "11b742f312a2bfb3ed3b87d729cbc9c80c71b40356738ea73ff63da3ea318f09",
+      "training_source": "deterministic_split_reconstruction:outputs/tdc/Lipophilicity_AstraZeneca",
+      "unit": "dataset_native_target_units"
+    }
+  },
+  "protocol": "admet_regression_train_quantiles",
+  "rule": "uniform seeded choice among q05/q25/q50/q75/q95 at least 0.5 train IQR from baseline and gold; no candidate => not applicable"
+}

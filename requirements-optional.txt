@@ -1,0 +1,9 @@
+# Optional retrieval / document / data preparation packages; not needed for smoke.
+sentence-transformers==5.5.1
+faiss-cpu==1.10.0
+elasticsearch==8.19.3
+pypdf==6.12.0
+pyarrow==24.0.0
+# PyTDC is not installed in the validation environment. If using TDC download
+# adapters, install a compatible PyTDC release in a separate preparation env.
+# Its dependency constraints can conflict with the prediction environment.

@@ -1,0 +1,1985 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgentM Web Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --soft: #fafafa;
+      --text: #000000d9;
+      --muted: #666666;
+      --border: #f0f0f0;
+      --accent: #1890ff;
+      --accent-dark: #0050b3;
+      --ok: #52c41a;
+      --ok-soft: #f6ffed;
+      --warn: #ad6800;
+      --warn-soft: #fffbe6;
+      --danger: #ff4d4f;
+      --code-bg: #f5f5f5;
+    }
+    * { box-sizing: border-box; }
+    html {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    body { width: 100%; min-height: 100%; background: var(--bg); overflow-x: hidden; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-width: 320px;
+      font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app {
+      min-height: 100vh;
+      overflow: clip;
+      display: grid;
+      grid-template-rows: 64px 48px auto;
+      background: var(--bg);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .brand {
+      margin: 0;
+      color: var(--accent);
+      font-size: 24px;
+      font-weight: 650;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .menu {
+      display: flex;
+      align-items: stretch;
+      padding: 0 24px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .menu-item {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 18px;
+      height: 48px;
+      color: var(--accent-dark);
+      border-bottom: 2px solid var(--accent);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    main.workspace {
+      display: grid;
+      grid-template-columns: minmax(310px, 22%) minmax(0, 1fr);
+      min-height: calc(100vh - 112px);
+      overflow: clip;
+      background: #fff;
+      align-items: start;
+    }
+    .input-panel {
+      padding: 10px;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      overflow: visible;
+    }
+    .config-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px #00000008;
+    }
+    .config-title {
+      margin: 0;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .config-body { padding: 16px; }
+    .result-panel {
+      height: auto;
+      min-height: calc(100vh - 112px);
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 45px 1fr;
+      overflow: clip;
+      background: #fff;
+    }
+    label {
+      display: block;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0 0 6px;
+    }
+    textarea, input, select {
+      width: 100%;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      padding: 8px 11px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    textarea { min-height: 132px; resize: vertical; }
+    textarea:focus, input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px #1890ff26; }
+    .field { margin-bottom: 16px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .segmented label {
+      margin: 0;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .segmented label + label { border-left: 1px solid #d9d9d9; }
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .segmented input:checked + span {
+      color: var(--accent-dark);
+      background: #e6f4ff;
+    }
+    .segmented span {
+      width: 100%;
+      height: 100%;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .checks { display: grid; gap: 8px; margin: 12px 0 16px; }
+    .check {
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      margin: 0;
+    }
+    .check input { width: 16px; height: 16px; }
+    button {
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-weight: 500;
+      padding: 7px 15px;
+      cursor: pointer;
+      transition: all .3s ease;
+    }
+    button:hover { border-color: var(--accent); color: var(--accent); }
+    button.ghost { height: 32px; padding: 4px 12px; }
+    button.primary {
+      width: 100%;
+      margin-top: 8px;
+      height: 40px;
+      background: #fff;
+      border-color: var(--accent);
+      color: var(--accent);
+      font-size: 16px;
+    }
+    button.primary:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px #1890ff4d;
+    }
+    button.primary:active { transform: translateY(0); }
+    button:disabled { opacity: 0.58; cursor: progress; }
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      overflow-y: hidden;
+      background: #fff;
+    }
+    .tab {
+      border: 0;
+      border-radius: 0;
+      padding: 0 18px;
+      background: #fff;
+      color: var(--muted);
+      height: 45px;
+      white-space: nowrap;
+    }
+    .tab.active { color: var(--accent-dark); box-shadow: inset 0 -2px 0 var(--accent); }
+    .view {
+      display: none;
+      padding: 10px;
+      overflow: visible;
+      min-width: 0;
+    }
+    .view.active { display: block; }
+    .app,
+    .menu,
+    main.workspace,
+    .input-panel,
+    .result-panel,
+    .tabs,
+    .view {
+      scrollbar-width: none;
+    }
+    .app::-webkit-scrollbar,
+    .menu::-webkit-scrollbar,
+    main.workspace::-webkit-scrollbar,
+    .input-panel::-webkit-scrollbar,
+    .result-panel::-webkit-scrollbar,
+    .tabs::-webkit-scrollbar,
+    .view::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      min-height: 72px;
+      background: var(--soft);
+    }
+    .metric b { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .metric span { font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+    .status { color: var(--muted); padding: 32px 16px; text-align: center; }
+    .status.error { color: var(--danger); text-align: left; white-space: pre-wrap; }
+    .status.warn { color: var(--warn); }
+    .run-status {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--soft);
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .progress-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      background: #fff;
+      box-shadow: 0 1px 2px #00000008;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .progress-track {
+      position: relative;
+      height: 34px;
+      overflow: hidden;
+      border: 1px solid #bae0ff;
+      border-radius: 6px;
+      background: #f0f8ff;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .35s ease;
+    }
+    .progress-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      color: #003a8c;
+      font-weight: 650;
+      font-size: 13px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .progress-track.completed .progress-fill { background: var(--ok); }
+    .progress-track.failed .progress-fill { background: var(--danger); }
+    .progress-track.completed .progress-label { color: #135200; }
+    .progress-track.failed .progress-label { color: #a8071a; }
+    .progress-list { display: grid; gap: 8px; }
+    .progress-item {
+      display: grid;
+      grid-template-columns: minmax(120px, 0.28fr) minmax(100px, 0.18fr) minmax(0, 1fr) minmax(64px, 0.1fr);
+      gap: 8px;
+      align-items: center;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+    }
+    .progress-item > div { min-width: 0; overflow-wrap: anywhere; }
+    .progress-item.running { border-color: var(--accent); background: #e6f4ff; }
+    .progress-item.completed, .progress-item.fallback_completed { border-color: #b7eb8f; background: var(--ok-soft); }
+    .progress-item.failed { border-color: #ffa39e; background: #fff2f0; }
+    .progress-step { font-weight: 650; overflow-wrap: anywhere; }
+    .progress-status { color: var(--muted); }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      margin: 2px 4px 2px 0;
+      background: var(--ok-soft);
+      color: var(--ok);
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .pill.warn { background: var(--warn-soft); color: var(--warn); }
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 180px));
+      gap: 12px;
+      justify-content: start;
+    }
+    figure {
+      margin: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      background: #fff;
+      box-shadow: 0 1px 2px #00000008;
+      max-width: 180px;
+    }
+    figure img {
+      display: block;
+      width: 100%;
+      max-height: 160px;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      background: var(--soft);
+      border-radius: 4px;
+    }
+    figcaption { color: var(--muted); font-size: 12px; margin-top: 7px; overflow-wrap: anywhere; }
+    figcaption .mono {
+      display: block;
+      max-height: 32px;
+      overflow: hidden;
+      color: #8c8c8c;
+    }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td {
+      border: 1px solid #d9d9d9;
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .table th { background: var(--soft); color: var(--muted); font-size: 12px; }
+    .mono, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+    pre {
+      margin: 0;
+      padding: 12px;
+      overflow: auto;
+      border-radius: 4px;
+      background: var(--code-bg);
+      color: #1f2937;
+      max-height: 540px;
+      max-width: 100%;
+    }
+    .stack { display: grid; gap: 12px; min-width: 0; }
+    .block {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+      background: #fff;
+      box-shadow: 0 1px 2px #00000008;
+      min-width: 0;
+    }
+    .block h2 { font-size: 16px; margin: 0 0 8px; font-weight: 600; }
+    .block p { margin: 0 0 8px; color: var(--text); }
+    .block p:last-child { margin-bottom: 0; }
+    details.panel {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    details.panel > summary {
+      cursor: pointer;
+      padding: 10px 12px;
+      font-weight: 650;
+      color: var(--accent-dark);
+      background: var(--soft);
+      list-style: none;
+    }
+    details.panel > summary::-webkit-details-marker { display: none; }
+    .panel-body { padding: 12px; border-top: 1px solid var(--border); }
+    .example-list { display: grid; gap: 8px; }
+    .example-item {
+      width: 100%;
+      text-align: left;
+      border-color: var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 10px;
+    }
+    .main-result {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+      gap: 12px;
+      align-items: start;
+    }
+    .prediction-panel {
+      border: 1px solid #bae0ff;
+      border-radius: 6px;
+      padding: 12px;
+      background: #f0f8ff;
+      min-width: 0;
+    }
+    .prediction-panel h2 { margin: 0 0 8px; font-size: 15px; }
+    .badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .pill.neutral { background: #f5f5f5; color: var(--muted); }
+    .pill.danger { background: #fff2f0; color: var(--danger); }
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+      gap: 12px;
+    }
+    .evidence-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .evidence-section-head h2 { margin: 0; }
+    .evidence-section-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .evidence-card {
+      border: 1px solid var(--border);
+      border-left: 4px solid #d9d9d9;
+      border-radius: 6px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: 0 1px 2px #00000008;
+      min-width: 0;
+    }
+    .evidence-card.support { border-left-color: var(--ok); }
+    .evidence-card.contradiction { border-left-color: var(--danger); }
+    .evidence-card.neutral { border-left-color: #bfbfbf; }
+    .evidence-card.low-quality { opacity: 0.78; }
+    .evidence-card h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .evidence-summary {
+      color: var(--text);
+      margin: 8px 0;
+      overflow-wrap: anywhere;
+    }
+    .evidence-compact {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 8px 0;
+    }
+    .evidence-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin: 6px 0;
+    }
+    .evidence-field {
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+      padding-top: 8px;
+    }
+    .evidence-field summary {
+      cursor: pointer;
+      color: var(--accent-dark);
+      font-weight: 650;
+    }
+    .evidence-field-value {
+      margin-top: 6px;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .workflow-board { display: grid; gap: 12px; }
+    .workflow-lane {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background: #fff;
+      min-width: 0;
+    }
+    .workflow-lane h2 { margin-top: 0; }
+    .workflow-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .workflow-node {
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 9px 10px;
+      background: var(--soft);
+      min-width: 168px;
+      max-width: 260px;
+      overflow-wrap: anywhere;
+    }
+    .workflow-node.completed,
+    .workflow-node.fallback_completed { border-left-color: var(--ok); }
+    .workflow-node.planned_inactive { border-left-color: var(--accent); background: #e6f4ff; }
+    .workflow-node.inactive { border-left-color: #d9d9d9; background: #fafafa; color: #8c8c8c; }
+    .workflow-node.failed,
+    .workflow-node.guard_blocked,
+    .workflow-node.guard_revision_blocked { border-left-color: var(--danger); }
+    .workflow-node.started,
+    .workflow-node.running { border-left-color: var(--accent); }
+    .workflow-node b { display: block; margin-bottom: 4px; }
+    .workflow-node span { display: block; color: var(--muted); font-size: 12px; }
+    .workflow-arrow {
+      align-self: center;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 2px;
+    }
+    .workflow-graph-stack { display: grid; gap: 12px; }
+    .workflow-graph-wrap {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+      overflow: auto;
+      padding: 10px;
+    }
+    .workflow-graph-title {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+    }
+    .workflow-svg {
+      display: block;
+      font-family: inherit;
+      max-width: none;
+    }
+    .pill.warn { background: #fff7e6; color: #ad6800; }
+    .workflow-empty { color: var(--muted); }
+    .timeline { display: grid; gap: 10px; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 12px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--muted);
+      margin-top: 6px;
+    }
+    .timeline-item.completed .timeline-dot,
+    .timeline-item.fallback_completed .timeline-dot { background: var(--ok); }
+    .timeline-item.running .timeline-dot,
+    .timeline-item.fallback_running .timeline-dot { background: var(--accent); }
+    .timeline-item.failed .timeline-dot { background: var(--danger); }
+    .timeline-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      background: #fff;
+      min-width: 0;
+    }
+    .timeline-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-weight: 650;
+    }
+    .timeline-title span { overflow-wrap: anywhere; }
+    .history-list { display: grid; gap: 8px; }
+    .history-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 9px 10px;
+      border-radius: 6px;
+    }
+    .history-item b { display: block; overflow-wrap: anywhere; }
+    .history-item span { display: block; color: var(--muted); font-size: 12px; }
+    .error-card {
+      border: 1px solid #ffa39e;
+      border-radius: 6px;
+      padding: 14px;
+      background: #fff2f0;
+      color: #820014;
+    }
+    .raw-toggle summary { cursor: pointer; color: var(--accent-dark); font-weight: 650; }
+    .kv {
+      display: grid;
+      grid-template-columns: minmax(96px, 0.34fr) minmax(0, 1fr);
+      gap: 7px 10px;
+      align-items: start;
+      min-width: 0;
+    }
+    .kv b { color: var(--muted); font-weight: 650; }
+    .kv span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .section-list { margin: 6px 0 0; padding-left: 20px; }
+    a { color: var(--accent-dark); }
+    @media (max-width: 880px) {
+      .app { max-height: none; overflow: clip; grid-template-rows: 64px 48px auto; }
+      .topbar, .menu { padding: 0 16px; }
+      main.workspace { grid-template-columns: 1fr; height: auto; overflow: clip; }
+      .input-panel { border-right: 0; border-bottom: 1px solid var(--border); }
+      .result-panel { height: auto; min-height: 60vh; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      .main-result { grid-template-columns: 1fr; }
+      .progress-item { grid-template-columns: 1fr; }
+    }
+  
+    .molecule-image-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; margin:12px 0; }
+    .molecule-image-card { border:1px solid var(--line, var(--border, #e5e7eb)); border-radius:8px; padding:12px; background:#fff; }
+    .molecule-image-card img { width:100%; max-height:320px; object-fit:contain; background:#fff; border:1px solid var(--line, var(--border, #e5e7eb)); border-radius:6px; }
+    .molecule-image-card .caption { margin-top:8px; color:var(--muted); font-size:13px; }
+    .molecule-image-card .caption b { color:var(--text); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1 class="brand">AgentM</h1>
+      <div class="top-actions">
+        <button class="ghost" type="button" onclick="window.open('/api/health', '_blank')">Health</button>
+        <span id="health" class="pill">ready</span>
+      </div>
+    </header>
+    <nav class="menu" aria-label="AgentM mode">
+      <span class="menu-item">Molecular Agent Demo</span>
+    </nav>
+    <main class="workspace">
+      <aside class="input-panel">
+        <div class="config-card">
+          <h2 class="config-title">Agent Request</h2>
+          <form class="config-body" id="run-form">
+            <div class="field">
+              <label for="request">Input</label>
+              <textarea id="request" name="request" spellcheck="false" placeholder="Ask about a molecule, ADMET endpoint, drug pair, or chemical reaction.">aspirin BBBP</textarea>
+            </div>
+            <details class="panel">
+              <summary>Examples</summary>
+              <div class="panel-body">
+                <div class="example-list">
+                  <button class="example-item" type="button" data-example="请预测 aspirin 是否能通过血脑屏障，任务是 BBBP，并解释结构依据">aspirin BBBP with structural explanation</button>
+                  <button class="example-item" type="button" data-example="评估 aspirin 的 DILI 风险，并说明证据来源">aspirin DILI risk with evidence</button>
+                  <button class="example-item" type="button" data-example="warfarin 和 aspirin 一起用安全吗？请给出相互作用风险和依据">warfarin + aspirin DDI question</button>
+                  <button class="example-item" type="button" data-task="reaction_classification" data-dataset="schneider" data-example="Classify this reaction: CC(=O)O.OCC>>CC(=O)OCC">Reaction classification</button>
+                  <button class="example-item" type="button" data-task="reaction_yield_prediction" data-dataset="buchwald_hartwig_kg" data-example="Predict yield for Brc1ccc(N)cc1.OB(O)c1ccccc1>>Nc1ccc(c2ccccc2)cc1">Reaction yield prediction</button>
+                  <button class="example-item" type="button" data-task="reaction_condition_retrieval" data-dataset="ORDerly" data-example="Find reaction condition evidence for CC(=O)O.OCC>>CC(=O)OCC">Reaction condition evidence</button>
+                </div>
+              </div>
+            </details>
+            <div class="field">
+              <label>Run mode</label>
+              <div class="segmented" role="radiogroup" aria-label="Run mode">
+                <label title="Fast mode">
+                  <input name="run-mode" type="radio" value="fast" checked>
+                  <span>Fast</span>
+                </label>
+                <label title="Full mode">
+                  <input name="run-mode" type="radio" value="full">
+                  <span>Full</span>
+                </label>
+                <label title="Custom mode">
+                  <input name="run-mode" type="radio" value="custom">
+                  <span>Custom</span>
+                </label>
+              </div>
+            </div>
+            <details class="panel">
+              <summary>Advanced Settings</summary>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="field">
+                    <label for="task-type">Task</label>
+                    <select id="task-type">
+                      <option value="">auto</option>
+                      <option value="property_prediction">property</option>
+                      <option value="admet_prediction">ADMET</option>
+                      <option value="ddi_prediction">DDI</option>
+                      <option value="reaction_profile">reaction profile</option>
+                      <option value="reaction_classification">reaction classification</option>
+                      <option value="reaction_yield_prediction">reaction yield</option>
+                      <option value="reaction_condition_retrieval">reaction conditions</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="dataset-name">Dataset</label>
+                    <input id="dataset-name" placeholder="auto">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="model-path">Model path</label>
+                  <input id="model-path" placeholder="optional">
+                </div>
+                <div class="checks">
+                  <label class="check"><input id="mllm" type="checkbox"> MLLM visual semantics</label>
+                  <label class="check"><input id="smiles-encoder" type="checkbox"> SMILES encoder</label>
+                  <label class="check"><input id="external" type="checkbox"> External DDI evidence</label>
+                  <label class="check"><input id="narrative-llm" type="checkbox"> LLM narrative polish</label>
+                  <label class="check"><input id="rag-evidence" type="checkbox"> RAG evidence</label>
+                  <label class="check"><input id="network" type="checkbox"> PubChem name lookup</label>
+                </div>
+              </div>
+            </details>
+            <button class="primary" id="run-button" type="submit">Start Prediction</button>
+          </form>
+        </div>
+        <div class="block" style="margin-top:10px">
+          <h2>Recent Runs</h2>
+          <div id="history" class="history-list"><div class="status">No runs yet.</div></div>
+        </div>
+      </aside>
+      <section class="result-panel">
+        <nav class="tabs" aria-label="Result views">
+          <button class="tab active" data-view="overview" type="button">Overview</button>
+          <button class="tab" data-view="report" type="button">Report</button>
+          <button class="tab" data-view="evidence" type="button">Evidence</button>
+          <button class="tab" data-view="quality" type="button">Quality</button>
+          <button class="tab" data-view="rag" type="button">RAG</button>
+          <button class="tab" data-view="workflow" type="button">Workflow</button>
+          <button class="tab" data-view="trace" type="button">Trace</button>
+          <button class="tab" data-view="artifacts" type="button">Artifacts</button>
+          <button class="tab" data-view="json" type="button">JSON</button>
+        </nav>
+        <div id="overview" class="view active"><div class="status">No run yet.</div></div>
+        <div id="report" class="view"><div class="status">No report yet.</div></div>
+        <div id="evidence" class="view"><div class="status">No evidence yet.</div></div>
+        <div id="quality" class="view"><div class="status">No quality summary yet.</div></div>
+        <div id="rag" class="view"><div class="status">No RAG context yet.</div></div>
+        <div id="workflow" class="view"><div class="status">No workflow yet.</div></div>
+        <div id="trace" class="view"><div class="status">No trace yet.</div></div>
+        <div id="artifacts" class="view"><div class="status">No artifacts yet.</div></div>
+        <div id="json" class="view"><pre>{}</pre></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const form = document.querySelector("#run-form");
+    const button = document.querySelector("#run-button");
+    const views = Object.fromEntries([...document.querySelectorAll(".view")].map(v => [v.id, v]));
+    const tabs = [...document.querySelectorAll(".tab")];
+    const history = document.querySelector("#history");
+    let lastResult = null;
+
+    for (const tab of tabs) {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.toggle("active", t === tab));
+        Object.values(views).forEach(v => v.classList.toggle("active", v.id === tab.dataset.view));
+      });
+    }
+    const modeDefaults = {
+      fast: {mllm: false, smiles: false, external: false, narrative: false, rag: false, network: false},
+      full: {mllm: true, smiles: true, external: true, narrative: true, rag: true, network: true},
+      custom: null
+    };
+    for (const mode of document.querySelectorAll("input[name='run-mode']")) {
+      mode.addEventListener("change", () => applyRunMode(mode.value));
+    }
+    for (const selector of ["#mllm", "#smiles-encoder", "#external", "#narrative-llm", "#rag-evidence", "#network"]) {
+      document.querySelector(selector).addEventListener("change", () => selectCustomMode());
+    }
+    for (const item of document.querySelectorAll(".example-item")) {
+      item.addEventListener("click", () => {
+        document.querySelector("#request").value = item.dataset.example || item.textContent || "";
+        if (item.dataset.task) document.querySelector("#task-type").value = item.dataset.task;
+        if (item.dataset.dataset) document.querySelector("#dataset-name").value = item.dataset.dataset;
+      });
+    }
+    applyRunMode(document.querySelector("input[name='run-mode']:checked").value);
+    refreshRuns();
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const runMode = document.querySelector("input[name='run-mode']:checked").value;
+      const payload = {
+        request: document.querySelector("#request").value,
+        run_mode: runMode,
+        task_type: document.querySelector("#task-type").value,
+        dataset_name: document.querySelector("#dataset-name").value,
+        model_path: document.querySelector("#model-path").value,
+        use_mllm_visual_semantic: document.querySelector("#mllm").checked,
+        use_smiles_encoder: document.querySelector("#smiles-encoder").checked,
+        use_external_evidence: document.querySelector("#external").checked,
+        use_narrative_llm: document.querySelector("#narrative-llm").checked,
+        use_rag_evidence: document.querySelector("#rag-evidence").checked,
+        allow_network_lookup: document.querySelector("#network").checked
+      };
+      button.disabled = true;
+      button.textContent = runMode === "full" ? "Queued Full Run..." : "Queued Fast Run...";
+      setStatus("overview", "AgentM run queued.");
+      setStatus("report", "Waiting for report.");
+      setStatus("evidence", "Waiting for evidence.");
+      setStatus("quality", "Waiting for quality summary.");
+      setStatus("rag", "Waiting for RAG context.");
+      setStatus("trace", "Waiting for trace.");
+      setStatus("artifacts", "Waiting for artifacts.");
+      try {
+        const run = await startRun(payload);
+        await pollRun(run.run_id);
+        await refreshRuns();
+      } catch (error) {
+        renderStructuredError({message: error && error.message ? error.message : String(error), raw: error && error.stack ? error.stack : String(error)});
+        await refreshRuns();
+      } finally {
+        button.disabled = false;
+        button.textContent = "Start Prediction";
+      }
+    });
+
+    function applyRunMode(mode) {
+      const defaults = modeDefaults[mode] || modeDefaults.fast;
+      if (mode === "custom") return;
+      document.querySelector("#mllm").checked = defaults.mllm;
+      document.querySelector("#smiles-encoder").checked = defaults.smiles;
+      document.querySelector("#external").checked = defaults.external;
+      document.querySelector("#narrative-llm").checked = defaults.narrative;
+      document.querySelector("#rag-evidence").checked = defaults.rag;
+      document.querySelector("#network").checked = defaults.network;
+    }
+
+    function selectCustomMode() {
+      const custom = document.querySelector("input[name='run-mode'][value='custom']");
+      if (custom) custom.checked = true;
+    }
+
+    async function startRun(payload) {
+      const {response, data} = await fetchJsonWithRetry("/api/runs", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+      }, {retries: 2, label: "queue run"});
+      if (!response.ok || !data.run) {
+        throw new Error(data.error || "AgentM run could not be queued");
+      }
+      renderRunStatus(data.run);
+      return data.run;
+    }
+
+    async function pollRun(runId) {
+      let transientFailures = 0;
+      while (true) {
+        let response;
+        let data;
+        try {
+          const payload = await fetchJsonWithRetry(`/api/runs/${encodeURIComponent(runId)}`, {}, {retries: 3, label: "read run status"});
+          response = payload.response;
+          data = payload.data;
+          transientFailures = 0;
+        } catch (error) {
+          transientFailures += 1;
+          const message = `Temporary connection problem while polling run ${runId}. Retrying ${transientFailures}/8...`;
+          views.overview.innerHTML = `<div class="status warn">${escapeHtml(message)}</div>`;
+          if (transientFailures >= 8) {
+            throw error;
+          }
+          await sleep(Math.min(8000, 1000 + transientFailures * 1000));
+          continue;
+        }
+        if (!response.ok || !data.run) {
+          throw new Error(data.error || "Could not read run status");
+        }
+        renderRunStatus(data.run);
+        if (data.run.status === "completed") {
+          const {response: resultResponse, data: result} = await fetchJsonWithRetry(`/api/runs/${encodeURIComponent(runId)}/result`, {}, {retries: 5, label: "read completed result"});
+          if (!resultResponse.ok || result.status !== "ok") {
+            throw new Error(result.error || "Could not read completed result");
+          }
+          lastResult = result;
+          render(result);
+          return;
+        }
+        if (data.run.status === "failed") {
+          renderRunStatus(data.run);
+          renderStructuredError({
+            message: data.run.error || "AgentM run failed",
+            failed_step: data.run.failed_step,
+            traceback_path: data.run.traceback_path,
+            fallback_used: data.run.fallback_used,
+            run_id: data.run.run_id
+          });
+          return;
+        }
+        await sleep(1200);
+      }
+    }
+
+    async function runSynchronously(payload) {
+      const {response, data} = await fetchJsonWithRetry("/api/run", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+      }, {retries: 2, label: "run synchronously"});
+      if (!response.ok || data.status !== "ok") {
+        throw new Error(data.error || "AgentM run failed");
+      }
+      lastResult = data;
+      render(data);
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchJsonWithRetry(url, options = {}, settings = {}) {
+      const retries = settings.retries ?? 3;
+      const label = settings.label || "request";
+      let lastError = null;
+      for (let attempt = 0; attempt <= retries; attempt += 1) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), settings.timeoutMs || 30000);
+        try {
+          const response = await fetch(url, {...options, signal: controller.signal});
+          const text = await response.text();
+          let data = {};
+          if (text) {
+            try {
+              data = JSON.parse(text);
+            } catch (error) {
+              data = {status: "error", error: text.slice(0, 500)};
+            }
+          }
+          clearTimeout(timeout);
+          return {response, data};
+        } catch (error) {
+          clearTimeout(timeout);
+          lastError = error;
+          if (attempt >= retries) {
+            const detail = error && error.message ? error.message : String(error);
+            throw new Error(`${label} failed after ${attempt + 1} attempts: ${detail}`);
+          }
+          await sleep(700 + attempt * 900);
+        }
+      }
+      throw lastError || new Error(`${label} failed`);
+    }
+
+    function renderRunStatus(run) {
+      const event = (run.events || []).slice(-1)[0] || {};
+      const current = run.current_step || {};
+      const progress = run.progress || {};
+      const stepEvents = run.step_events || [];
+      const latestSteps = latestStepEvents(stepEvents);
+      const percent = progressPercent(run, progress);
+      const progressText = progressLabel(run, current, progress);
+      const capabilityHtml = capabilityBadges(run, latestSteps);
+      const stepHtml = latestSteps.map(step => `
+        <div class="progress-item ${escapeHtml(step.status || "")}">
+          <div class="progress-step">${escapeHtml(friendlyStepName(step.step_id || step.tool_name || ""))}</div>
+          <div class="progress-status">${escapeHtml(step.status || "")}</div>
+          <div>${escapeHtml(step.message || step.description || "")}</div>
+          <div class="mono">${formatNumber(step.duration_sec)}</div>
+        </div>
+      `).join("");
+      const html = `
+        <div class="run-status">
+          <span><b>Run</b> <span class="mono">${escapeHtml(run.run_id || "")}</span></span>
+          <span><b>Mode</b> ${escapeHtml(run.run_mode || "")}</span>
+          <span><b>Status</b> ${escapeHtml(run.status || "")}</span>
+          <span><b>Elapsed</b> ${formatNumber(run.elapsed_sec)}</span>
+          <span><b>Steps</b> ${progress.completed_steps ?? 0}/${progress.expected_total_steps || progress.total_seen_steps || 0}</span>
+          <span>${escapeHtml(event.message || "")}</span>
+        </div>
+        <div class="progress-card">
+          <div class="progress-meta">
+            <span>${escapeHtml(run.status === "completed" ? "Completed" : run.status === "failed" ? "Failed" : "Running")}</span>
+            <span>${percent}%</span>
+          </div>
+          <div class="progress-track ${escapeHtml(run.status || "")}">
+            <div class="progress-fill" style="width:${percent}%"></div>
+            <div class="progress-label">${escapeHtml(progressText)}</div>
+          </div>
+          ${capabilityHtml ? `<div class="badge-row">${capabilityHtml}</div>` : ""}
+        </div>
+      `;
+      views.overview.innerHTML = html;
+      views.trace.innerHTML = `
+        <div class="stack">
+          ${stepHtml ? `<div class="block"><h2>Live Tool Progress</h2><div class="progress-list">${stepHtml}</div></div>` : ""}
+          <div class="block"><h2>Run Events</h2><div class="run-status">${(run.events || []).map(e => `<span>${escapeHtml(e.time || "")} ${escapeHtml(e.status || "")}: ${escapeHtml(e.message || "")}</span>`).join("")}</div></div>
+        </div>
+      `;
+    }
+
+    function progressPercent(run, progress) {
+      if (run.status === "completed") return 100;
+      if (run.status === "failed") return Math.max(1, Math.min(100, Math.round(((progress.completed_steps || 0) / Math.max(1, progress.expected_total_steps || progress.total_seen_steps || 1)) * 100)));
+      const total = Math.max(1, progress.expected_total_steps || progress.total_seen_steps || 1);
+      const completed = Math.max(0, progress.completed_steps || 0);
+      const runningBonus = progress.running_steps ? 0.5 : 0;
+      return Math.max(3, Math.min(98, Math.round(((completed + runningBonus) / total) * 100)));
+    }
+
+    function progressLabel(run, current, progress) {
+      if (run.status === "completed") {
+        return "Completed: report is ready";
+      }
+      if (run.status === "failed") {
+        return `Failed: ${run.error || "AgentM run failed"}`;
+      }
+      const step = current.step_id || current.tool_name;
+      const status = current.status || "running";
+      if (step) {
+        const verb = status === "running" || status === "fallback_running" ? "Running" : "Last step";
+        return `${verb}: ${friendlyStepName(step)} (${progress.completed_steps || 0}/${progress.expected_total_steps || progress.total_seen_steps || "?"})`;
+      }
+      return "Starting agent workflow";
+    }
+
+    function capabilityBadges(run, steps) {
+      const combined = JSON.stringify({run, steps}).toLowerCase();
+      const badges = [];
+      if (combined.includes("qwen") || combined.includes("llm_literature") || combined.includes("discover_rules")) badges.push(["Qwen rules", "neutral"]);
+      if (combined.includes("mllm") || combined.includes("visual_semantic")) badges.push(["Kimi MLLM/visual", combined.includes("fallback") ? "warn" : "neutral"]);
+      if (combined.includes("rag")) badges.push(["RAG evidence", "neutral"]);
+      if (combined.includes("pubchem")) badges.push(["PubChem lookup", "neutral"]);
+      if (combined.includes("dailymed")) badges.push(["DailyMed", "neutral"]);
+      if (combined.includes("pubmed")) badges.push(["PubMed", "neutral"]);
+      if (run.fallback_used || combined.includes("fallback_completed")) badges.push(["fallback used", "warn"]);
+      return badges.map(([label, tone]) => `<span class="pill ${tone}">${escapeHtml(label)}</span>`).join("");
+    }
+
+    function friendlyStepName(value) {
+      const key = String(value || "");
+      const names = {
+        wait_for_agent_slot: "Waiting for agent slot",
+        initialize_agent: "Initializing agent",
+        parse_input: "Parsing request",
+        resolve_molecule: "Resolving molecule",
+        resolve_drug_a: "Resolving drug A",
+        resolve_drug_b: "Resolving drug B",
+        discover_rules: "Discovering LLM4SD rules",
+        maybe_enable_mllm_visual_semantic: "Checking MLLM visual semantics",
+        build_single_features: "Building molecular features",
+        build_drug_a_features: "Building drug A features",
+        build_drug_b_features: "Building drug B features",
+        build_pair_features: "Building DDI pair features",
+        predict: "Running prediction",
+        retrieve_evidence: "Retrieving evidence",
+        retrieve_rag_evidence: "Retrieving RAG literature",
+        reason_ddi: "Reasoning about DDI",
+        write_report: "Generating report",
+        narrative_report: "Writing narrative report"
+      };
+      return names[key] || key.replaceAll("_", " ");
+    }
+
+    function latestStepEvents(stepEvents) {
+      const byStep = new Map();
+      for (const event of stepEvents || []) {
+        if (event && event.step_id) {
+          byStep.set(event.step_id, event);
+        }
+      }
+      return [...byStep.values()];
+    }
+
+    function setStatus(view, text) {
+      views[view].innerHTML = `<div class="status">${escapeHtml(text)}</div>`;
+    }
+
+    async function refreshRuns() {
+      if (!history) return;
+      try {
+        const {response, data} = await fetchJsonWithRetry("/api/runs", {}, {retries: 1, label: "read recent runs", timeoutMs: 12000});
+        if (response.ok && data.runs) {
+          renderHistory(data.runs);
+        }
+      } catch (error) {
+        history.innerHTML = `<div class="status warn">Recent runs unavailable.</div>`;
+      }
+    }
+
+    function renderHistory(runs) {
+      const items = (runs || []).slice(0, 8);
+      if (!items.length) {
+        history.innerHTML = `<div class="status">No runs yet.</div>`;
+        return;
+      }
+      history.innerHTML = items.map(run => {
+        const summary = run.summary || {};
+        const pred = summary.prediction || {};
+        const warningCount = summary.warning_count ?? (summary.warnings || []).length;
+        const dataset = pred.dataset_name || summary.dataset_name || "";
+        const confidence = summary.confidence || {};
+        const confidenceText = confidence.confidence_level || formatNumber(confidence.evidence_grounded_score ?? pred.probability ?? pred.score);
+        const fallback = run.fallback_used || summary.fallback_used ? " · fallback" : "";
+        const qualityText = ` · completed ${summary.completed_status || "n/a"} · objective ${summary.objective_status || "n/a"} · model ${summary.model_status || "n/a"} · citation ${summary.citation_grounded === false ? "warning" : "grounded"} · verifier ${summary.verifier_status || "n/a"} · evidence ${summary.evidence_count ?? 0}`;
+        const elapsed = run.elapsed_sec != null ? ` · ${formatNumber(run.elapsed_sec)}s` : "";
+        return `
+          <button class="history-item" type="button" data-run-id="${escapeHtml(run.run_id || "")}">
+            <b>${escapeHtml(run.request || "")}</b>
+            <span>${escapeHtml(run.status || "")} · ${escapeHtml(run.run_mode || "")} · ${escapeHtml(summary.task_type || "")} · ${escapeHtml(dataset)}</span>
+            <span>label ${escapeHtml(pred.label ?? "")} · score ${escapeHtml(formatNumber(pred.probability ?? pred.score))} · confidence ${escapeHtml(confidenceText || "n/a")} · warnings ${warningCount}${qualityText}${fallback}${elapsed}</span>
+          </button>
+        `;
+      }).join("");
+      for (const item of history.querySelectorAll(".history-item")) {
+        item.addEventListener("click", async () => {
+          const runId = item.dataset.runId;
+          if (!runId) return;
+          const {response, data} = await fetchJsonWithRetry(`/api/runs/${encodeURIComponent(runId)}`, {}, {retries: 2, label: "read historical run"});
+          if (response.ok && data.run) renderRunStatus(data.run);
+          const resultPayload = await fetchJsonWithRetry(`/api/runs/${encodeURIComponent(runId)}/result`, {}, {retries: 1, label: "read historical result"});
+          if (resultPayload.response.ok && resultPayload.data.status === "ok") render(resultPayload.data);
+        });
+      }
+    }
+
+    function renderStructuredError(error) {
+      const failed = error.failed_step || {};
+      const suggestion = error.fallback_used
+        ? "A fallback was used before failure; inspect the trace artifact and retry with Fast mode if the failure came from an external provider."
+        : "Try Fast mode, disable network/MLLM options, or check the model/API configuration for the failed step.";
+      views.overview.innerHTML = `
+        <div class="error-card">
+          <h2>Run failed</h2>
+          <p>${escapeHtml(error.message || "AgentM run failed")}</p>
+          <div class="kv">
+            ${kv("Run", error.run_id || "")}
+            ${kv("Failed step", failed.step_id || failed.tool_name || "")}
+            ${kv("Step status", failed.status || "")}
+            ${kv("Fallback used", error.fallback_used ? "yes" : "no")}
+            ${kv("Traceback", error.traceback_path || "")}
+            ${kv("Suggested action", suggestion)}
+          </div>
+        </div>
+        ${error.raw ? `<details class="block raw-toggle"><summary>Raw error</summary><pre>${escapeHtml(error.raw)}</pre></details>` : ""}
+      `;
+      views.report.innerHTML = `<div class="status error">${escapeHtml(error.message || "Run failed.")}</div>`;
+      views.evidence.innerHTML = `<div class="status">No evidence because the run failed.</div>`;
+      views.quality.innerHTML = `<div class="status">No quality summary because the run failed.</div>`;
+    }
+
+    function render(data) {
+      renderOverview(data);
+      renderReport(data);
+      renderEvidence(data);
+      renderQuality(data);
+      renderRag(data);
+      renderWorkflow(data);
+      renderTrace(data);
+      renderArtifacts(data);
+      views.json.innerHTML = `<pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>`;
+    }
+
+    function renderOverview(data) {
+      const pred = data.prediction || {};
+      const narrative = data.narrative_report || {};
+      const release = releaseInfo(data);
+      const quality = data.quality_summary || {};
+      const predictionMode = quality.prediction_mode || (data.task_type === "general_drug_profile" ? "not_requested" : "");
+      const completedStatus = quality.completed_status || "yes";
+      const modelStatus = quality.model_status || (pred.model_type ? "available" : ["not_requested", "reaction_profile"].includes(predictionMode) ? "not required" : "");
+      const capabilityText = capabilityInline(data);
+      const generalNotice = data.general_profile_notice ? `<div class="status">${escapeHtml(data.general_profile_notice)}</div>` : "";
+      const imagePanel = moleculeImageGallery(data);
+      const reaction = data.reaction || {};
+      const reactionProfile = data.reaction_profile || {};
+      const reactionPrediction = data.reaction_prediction || {};
+      const reactionPanel = String(data.task_type || "").startsWith("reaction_") ? `
+          <div class="block">
+            <h2>Reaction</h2>
+            <div class="kv">
+              ${kv("Reaction", reaction.reaction_smiles || "")}
+              ${kv("Reactants", (reaction.reactants || []).join(" + "))}
+              ${kv("Products", (reaction.products || []).join(" + "))}
+              ${kv("Reaction prediction", reactionPrediction.label || pred.label || "")}
+              ${kv("Yield / score", formatNumber(reactionPrediction.score ?? pred.score))}
+              ${kv("Reaction model", reactionPrediction.model_type || pred.model_type || "")}
+              ${kv("Template evidence", reactionProfile.template_evidence_count ?? "")}
+              ${kv("Condition evidence", reactionProfile.condition_evidence_count ?? "")}
+            </div>
+            ${reactionProfile.summary ? `<p>${escapeHtml(reactionProfile.summary)}</p>` : ""}
+          </div>` : "";
+      const molRows = (data.molecules || []).map(mol => `
+        <tr>
+          <td>${escapeHtml(mol.original_input || "")}</td>
+          <td>${escapeHtml(mol.name || "")}</td>
+          <td>${escapeHtml(mol.source || "")}</td>
+          <td class="mono">${escapeHtml(mol.canonical_smiles || "")}</td>
+        </tr>
+      `).join("");
+      const warningHtml = (data.warnings || []).map(w => `<span class="pill warn">${escapeHtml(w)}</span>`).join("");
+      const imageHtml = (data.images || []).filter(img => img.url).map(img => `
+        <figure>
+          <img src="${img.url}" alt="${escapeHtml(img.label)}">
+          <figcaption>${escapeHtml(img.label)}<br><span class="mono">${escapeHtml(img.path)}</span></figcaption>
+        </figure>
+      `).join("");
+      const fileHtml = (data.files || []).filter(f => f.url).map(f => `<a href="${f.url}" target="_blank" rel="noreferrer">${escapeHtml(f.label)}</a>`).join(" ");
+      views.overview.innerHTML = `
+        <div class="stack">
+          <div class="main-result">
+            <div class="block">
+              <h2>${escapeHtml(narrative.headline || "AgentM result")}</h2>
+              ${generalNotice}
+              <p>${escapeHtml(narrative.plain_language_summary || data.explanation || "")}</p>
+              ${imagePanel}
+              ${(narrative.key_reasons || []).length ? `<ul class="section-list">${narrative.key_reasons.map(r => `<li>${escapeHtml(r)}</li>`).join("")}</ul>` : ""}
+              ${narrative.evidence_summary ? `<p>${escapeHtml(narrative.evidence_summary)}</p>` : ""}
+              ${narrative.uncertainty ? `<p>${escapeHtml(narrative.uncertainty)}</p>` : ""}
+              ${data.reasoning_summary ? `<p>${escapeHtml(data.reasoning_summary)}</p>` : ""}
+              ${warningHtml ? `<div class="badge-row">${warningHtml}</div>` : ""}
+            </div>
+            <aside class="prediction-panel">
+              <h2>Prediction</h2>
+              <div class="kv">
+                ${kv("Task", data.task_type || "")}
+                ${kv("Dataset", pred.dataset_name || data.dataset_name || "")}
+                ${kv("Endpoint prediction", predictionMode)}
+                ${kv("Label", pred.label ?? "")}
+                ${kv("Meaning", pred.predicted_meaning || "")}
+                ${kv("Score", formatNumber(pred.probability ?? pred.score))}
+                ${kv("Prediction model", pred.model_type || "")}
+                ${kv("Completed", completedStatus)}
+                ${kv("Objective", quality.objective_status || "")}
+                ${kv("Model", modelStatus)}
+                ${kv("Citation", quality.citation_grounded === false ? "warning" : quality.citation_grounded === true ? "yes" : "")}
+                ${kv("Verifier", quality.verifier_status || "")}
+                ${kv("Evidence items", quality.evidence_count ?? (data.evidence || []).length)}
+                ${kv("Evidence index", release.index_name || "")}
+                ${kv("Release docs", release.document_count ?? "")}
+                ${kv("Dense indexed", release.embedding_enabled ? "yes" : "")}
+                ${kv("Capabilities", capabilityText)}
+                ${kv("20-50 cases", release.expanded_acceptance || "deferred")}
+                ${kv("RAG snippets", (data.rag_context || []).length)}
+                ${kv("Run", data.run_id || "")}
+              </div>
+            </aside>
+          </div>
+          ${reactionPanel}
+          <div class="block">
+            <h2>Molecules</h2>
+            <table class="table">
+              <thead><tr><th>Input</th><th>Name</th><th>Source</th><th>Canonical SMILES</th></tr></thead>
+              <tbody>${molRows}</tbody>
+            </table>
+          </div>
+          ${imageHtml ? `<div class="images">${imageHtml}</div>` : ""}
+          ${fileHtml ? `<div class="block"><h2>Artifacts</h2><p>${fileHtml}</p></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderReport(data) {
+      const narrative = data.narrative_report || {};
+      const sections = data.structured_sections || {};
+      const sectionHtml = Object.entries(sections).map(([name, rows]) => {
+        const items = Array.isArray(rows) ? rows : [];
+        return `<div class="block"><h2>${escapeHtml(titleCase(name))}</h2>${items.length ? `<ul class="section-list">${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>` : "<p>No items.</p>"}</div>`;
+      }).join("");
+      const claimCitationRows = (data.claim_level_citations || []).flatMap(row => {
+        const citations = row.citations || [];
+        return citations.slice(0, 4).map(citation => `
+          <tr>
+            <td>${escapeHtml(row.claim || "")}</td>
+            <td>${escapeHtml(citation.label || citation.citation_id || "")}</td>
+            <td>${escapeHtml(citation.source || "")}</td>
+            <td class="mono">${escapeHtml(citation.url || citation.pmid || citation.cid || citation.setid || citation.chunk_id || citation.source_path || "")}</td>
+            <td>${formatNumber(citation.retrieval_score)}</td>
+          </tr>
+        `);
+      }).join("");
+      const claimCitationHtml = claimCitationRows ? `
+        <div class="block">
+          <h2>Claim-Level Citations</h2>
+          <table class="table">
+            <thead><tr><th>Claim</th><th>Citation</th><th>Source</th><th>Pointer</th><th>Score</th></tr></thead>
+            <tbody>${claimCitationRows}</tbody>
+          </table>
+        </div>
+      ` : "";
+      views.report.innerHTML = `
+        <div class="stack">
+          <div class="block">
+            <h2>${escapeHtml(narrative.headline || "Narrative report")}</h2>
+            <p>${escapeHtml(narrative.plain_language_summary || data.explanation || "")}</p>
+            ${narrative.evidence_summary ? `<p>${escapeHtml(narrative.evidence_summary)}</p>` : ""}
+            ${narrative.uncertainty ? `<p>${escapeHtml(narrative.uncertainty)}</p>` : ""}
+          </div>
+          ${sectionHtml || `<div class="status">No structured sections returned.</div>`}
+          ${claimCitationHtml}
+        </div>
+      `;
+    }
+
+    function renderEvidence(data) {
+      const cards = data.evidence_cards || [];
+      if (!cards.length) {
+        views.evidence.innerHTML = `<div class="status">No evidence returned.</div>`;
+        return;
+      }
+      const order = ["rag_literature", "pubmed", "dailymed", "pubchem", "local_ddi_evidence", "model_rule_evidence", "other_evidence"];
+      const grouped = new Map();
+      for (const card of cards) {
+        const key = card.source_group || "other_evidence";
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(card);
+      }
+      const sections = order.filter(key => grouped.has(key)).map(key => `
+        <div class="block">
+          <div class="evidence-section-head">
+            <h2>${escapeHtml(sourceGroupLabel(key))}</h2>
+            <div class="evidence-section-meta">${evidenceSectionBadges(grouped.get(key))}</div>
+          </div>
+          <div class="evidence-grid">
+            ${grouped.get(key).map(renderEvidenceCard).join("")}
+          </div>
+        </div>
+      `).join("");
+      views.evidence.innerHTML = `<div class="stack">${sections}</div>`;
+    }
+
+    function renderEvidenceCard(card) {
+      const direction = card.direction || "neutral";
+      const low = card.is_low_quality ? " low-quality" : "";
+      const raw = card.raw || {};
+      const preview = evidencePreview(card);
+      const title = shortText(card.claim || card.related_claim || card.source || "Evidence item", 180);
+      const query = shortText(card.query || "", 260);
+      const url = card.url ? `<a href="${escapeHtml(card.url)}" target="_blank" rel="noreferrer">source</a>` : "";
+      return `
+        <article class="evidence-card ${escapeHtml(direction)}${low}">
+          <h3 title="${escapeHtml(card.claim || card.related_claim || "")}">${escapeHtml(title)}</h3>
+          ${preview ? `<p class="evidence-summary">${escapeHtml(preview)}</p>` : ""}
+          <div class="evidence-compact">
+            <span class="pill neutral">${escapeHtml(card.source || "")}</span>
+            <span class="pill ${direction === "contradiction" ? "danger" : direction === "support" ? "" : "neutral"}">${escapeHtml(direction)}</span>
+            ${card.support_level ? `<span class="pill neutral">${escapeHtml(card.support_level)}</span>` : ""}
+            ${card.score !== undefined && card.score !== null ? `<span class="pill neutral">score ${escapeHtml(formatNumber(card.score))}</span>` : ""}
+            ${card.identifier ? `<span class="pill neutral">${escapeHtml(String(card.identifier))}</span>` : ""}
+            ${card.is_fallback ? `<span class="pill warn">fallback</span>` : ""}
+            ${card.is_low_quality ? `<span class="pill warn">low quality</span>` : ""}
+          </div>
+          ${url ? `<p>${url}</p>` : ""}
+          ${query ? `<details class="evidence-field"><summary>Query</summary><div class="evidence-field-value">${escapeHtml(query)}</div></details>` : ""}
+          ${card.related_claim ? `<details class="evidence-field"><summary>Related claim</summary><div class="evidence-field-value">${escapeHtml(shortText(card.related_claim, 260))}</div></details>` : ""}
+          <details class="evidence-field raw-toggle">
+            <summary>Raw evidence</summary>
+            <pre>${escapeHtml(JSON.stringify(raw || card, null, 2))}</pre>
+          </details>
+        </article>
+      `;
+    }
+
+    function evidenceSectionBadges(cards) {
+      const list = cards || [];
+      const support = list.filter(card => card.direction === "support").length;
+      const contradiction = list.filter(card => card.direction === "contradiction").length;
+      const fallback = list.filter(card => card.is_fallback).length;
+      const weak = list.filter(card => card.is_low_quality || String(card.support_level || "").toLowerCase() === "weak").length;
+      return [
+        `<span class="pill neutral">${list.length} items</span>`,
+        support ? `<span class="pill">${support} support</span>` : "",
+        contradiction ? `<span class="pill danger">${contradiction} contradiction</span>` : "",
+        weak ? `<span class="pill warn">${weak} weak</span>` : "",
+        fallback ? `<span class="pill warn">${fallback} fallback</span>` : ""
+      ].join("");
+    }
+
+    function evidencePreview(card) {
+      const raw = card.raw || {};
+      const value = raw.value || {};
+      const candidates = [
+        raw.snippet,
+        raw.summary,
+        raw.text,
+        raw.claim,
+        raw.mechanism,
+        raw.interaction_type,
+        value.snippet,
+        value.summary,
+        value.abstract,
+        value.description,
+        value.title,
+        value.text,
+        value.name
+      ];
+      const found = candidates.find(item => typeof item === "string" && item.trim());
+      if (found) return shortText(found, 320);
+      if (value && Object.keys(value).length) return shortText(JSON.stringify(value), 260);
+      return "";
+    }
+
+    function shortText(value, maxLength = 180) {
+      const text = String(value || "").replace(/\s+/g, " ").trim();
+      if (text.length <= maxLength) return text;
+      return text.slice(0, Math.max(0, maxLength - 1)).trimEnd() + "…";
+    }
+
+    function sourceGroupLabel(key) {
+      const labels = {
+        rag_literature: "RAG literature",
+        pubmed: "PubMed",
+        dailymed: "DailyMed",
+        pubchem: "PubChem",
+        local_ddi_evidence: "Local DDI evidence",
+        model_rule_evidence: "Model / rule evidence",
+        other_evidence: "Other evidence"
+      };
+      return labels[key] || titleCase(key);
+    }
+
+    function renderQuality(data) {
+      const q = data.evidence_quality || {};
+      const scoring = data.evidence_grounded_scoring || {};
+      const unc = data.calibration_uncertainty || {};
+      const failure = data.failure_mode_assessment || {};
+      const release = releaseInfo(data);
+      const quality = data.quality_summary || {};
+      const completedStatus = quality.completed_status || "yes";
+      const modelStatus = quality.model_status || (quality.prediction_mode === "tool_grounded" ? "available" : ["not_requested", "reaction_profile"].includes(quality.prediction_mode) ? "not required" : "");
+      const top = (q.top_evidence || []).map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(item.source || "")}</td>
+          <td>${escapeHtml(item.direction || "")}</td>
+          <td>${formatNumber(item.relevance_score)}</td>
+          <td>${formatNumber(item.rerank_score)}</td>
+          <td>${escapeHtml(item.quality_rationale || item.claim || "")}</td>
+        </tr>
+      `).join("");
+      views.quality.innerHTML = `
+        <div class="summary-grid">
+          ${metric("Completed", completedStatus)}
+          ${metric("Objective", quality.objective_status || "")}
+          ${metric("Model", modelStatus)}
+          ${metric("Citation", quality.citation_grounded === false ? "warning" : quality.citation_grounded === true ? "yes" : "")}
+          ${metric("Verifier", quality.verifier_status || "")}
+          ${metric("Evidence score", formatNumber(scoring.evidence_grounded_score))}
+          ${metric("Coverage", formatNumber(scoring.coverage_score))}
+          ${metric("Avg relevance", formatNumber(q.average_relevance_score))}
+          ${metric("Avg reliability", formatNumber(q.average_source_reliability))}
+          ${metric("Kept evidence", q.n_kept_evidence ?? "")}
+          ${metric("Dropped evidence", q.n_dropped_evidence ?? "")}
+          ${metric("Calibration", unc.calibration_status || "")}
+          ${metric("Robustness", failure.robustness_status || "")}
+        </div>
+        <p class="muted">Claim-level verification binds retained claims to prediction records or evidence records.</p>
+        <p class="muted">Bounded reflection can request repair or retrieval refinement, but cannot create predictions or citations.</p>
+        ${capabilityTable(data)}
+        <div class="stack">
+          <div class="block"><h2>Uncertainty</h2><div class="kv">${kv("Calibration method", unc.calibration_method)}${kv("Raw probability", formatNumber(unc.raw_probability))}${kv("Calibrated probability", formatNumber(unc.calibrated_probability))}${kv("Confidence", unc.confidence_level)}${kv("Warning", unc.warning)}</div></div>
+          <div class="block"><h2>Failure Mode</h2><pre>${escapeHtml(JSON.stringify(failure, null, 2))}</pre></div>
+          ${top ? `<div class="block"><h2>Top Evidence After Rerank</h2><table class="table"><thead><tr><th>#</th><th>Source</th><th>Direction</th><th>Relevance</th><th>Rerank</th><th>Rationale</th></tr></thead><tbody>${top}</tbody></table></div>` : ""}
+        </div>
+      `;
+    }
+
+    function renderRag(data) {
+      const rag = data.rag_evidence || {};
+      const rows = (data.rag_context || []).map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(item.source || item.doc_id || "")}</td>
+          <td>${formatNumber(item.score)}</td>
+          <td><pre>${escapeHtml(item.snippet || JSON.stringify(item, null, 2))}</pre></td>
+        </tr>
+      `).join("");
+      views.rag.innerHTML = `
+        <div class="summary-grid">
+          ${metric("Provider", rag.provider || "")}
+          ${metric("Backend", rag.backend || "")}
+          ${metric("Retrieved", rag.n_retrieved_context ?? (data.rag_context || []).length)}
+          ${metric("Query", rag.query || "")}
+        </div>
+        ${rows ? `<table class="table"><thead><tr><th>#</th><th>Source</th><th>Score</th><th>Snippet</th></tr></thead><tbody>${rows}</tbody></table>` : `<div class="status">No RAG context returned.</div>`}
+      `;
+    }
+
+    function renderWorkflow(data) {
+      const graph = data.workflow_graph || {};
+      const runtime = (graph.langgraph || {}).nodes || [];
+      const planned = (graph.planned || {}).nodes || [];
+      const executed = (graph.execution || {}).nodes || [];
+      const topology = graph.full_topology || {};
+      const summary = graph.summary || {};
+      if (!runtime.length && !planned.length && !executed.length) {
+        views.workflow.innerHTML = `<div class="status">No workflow returned.</div>`;
+        return;
+      }
+      views.workflow.innerHTML = `
+        <div class="workflow-board">
+          <div class="summary-grid">
+            ${metric("Runtime", graph.runtime || "LangGraph")}
+            ${metric("Planned steps", summary.planned_steps ?? planned.length)}
+            ${metric("Executed steps", summary.executed_steps ?? executed.length)}
+            ${metric("Runtime-added", summary.runtime_added_steps ?? 0)}
+            ${metric("Available tools", summary.available_tools ?? ((topology.nodes || []).length))}
+            ${metric("Inactive tools", summary.inactive_tools ?? 0)}
+            ${metric("Agents", (summary.agents || []).join(", "))}
+          </div>
+          <div class="workflow-lane">
+            <h2>LangGraph Runtime</h2>
+            ${workflowFlow(runtime)}
+          </div>
+          <div class="workflow-lane">
+            <h2>Graph Structure</h2>
+            ${workflowGraphStructure(graph)}
+          </div>
+          <div class="workflow-lane">
+            <h2>Orchestrator Plan</h2>
+            ${planned.length ? workflowFlow(planned) : `<div class="workflow-empty">No planned task graph returned.</div>`}
+          </div>
+          <div class="workflow-lane">
+            <h2>Executed Agent Path</h2>
+            ${executed.length ? workflowFlow(executed) : `<div class="workflow-empty">No tool calls executed.</div>`}
+          </div>
+          <div class="workflow-lane">
+            <h2>Full Agent/Tool Topology</h2>
+            ${workflowTopology(topology)}
+          </div>
+          ${graph.mermaid ? `<details class="raw-toggle"><summary>Mermaid source</summary><pre>${escapeHtml(graph.mermaid)}</pre></details>` : ""}
+          ${graph.topology_mermaid ? `<details class="raw-toggle"><summary>Full topology Mermaid source</summary><pre>${escapeHtml(graph.topology_mermaid)}</pre></details>` : ""}
+        </div>
+      `;
+    }
+
+    function workflowGraphStructure(graph) {
+      const executed = ((graph || {}).execution || {}).nodes || [];
+      const topology = ((graph || {}).full_topology) || {};
+      return `<div class="workflow-graph-stack">
+        ${executed.length ? workflowExecutedGraph(executed) : `<div class="workflow-empty">No executed path returned.</div>`}
+        ${((topology.nodes || []).length) ? workflowTopologyGraph(topology) : `<div class="workflow-empty">No topology returned.</div>`}
+      </div>`;
+    }
+
+    function workflowExecutedGraph(nodes) {
+      const nodeW = 174;
+      const nodeH = 62;
+      const gapX = 58;
+      const gapY = 68;
+      const perRow = 8;
+      const width = Math.max(760, Math.min(perRow, Math.max(nodes.length, 1)) * (nodeW + gapX) + 24);
+      const rows = Math.ceil(nodes.length / perRow);
+      const height = 42 + rows * (nodeH + gapY);
+      const positions = nodes.map((node, index) => ({
+        node,
+        x: 14 + (index % perRow) * (nodeW + gapX),
+        y: 30 + Math.floor(index / perRow) * (nodeH + gapY),
+        width: nodeW,
+        height: nodeH,
+      }));
+      const edges = positions.slice(0, -1).map((item, index) => {
+        const next = positions[index + 1];
+        return workflowSvgEdge(item, next, true, "");
+      }).join("");
+      return `<div class="workflow-graph-wrap">
+        <div class="workflow-graph-title">Executed path graph</div>
+        <svg class="workflow-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Executed agent path graph">
+          <defs>${workflowSvgArrowDefs()}</defs>
+          ${edges}
+          ${positions.map(item => workflowSvgNode(item.node, item.x, item.y, nodeW, nodeH)).join("")}
+        </svg>
+      </div>`;
+    }
+
+    function workflowTopologyGraph(topology) {
+      const nodes = (topology || {}).nodes || [];
+      const edges = (topology || {}).edges || [];
+      const nodeW = 164;
+      const nodeH = 60;
+      const levelGap = 186;
+      const laneGap = 230;
+      const labelW = 116;
+      const agentOrder = ["MoleculeAgent", "GaugeAgent", "RetrieveAgent", "ReactionAgent", "ReasoningAgent", "ReporterAgent", "VerifierAgent", "ReflectionAgent"];
+      const levelByTool = {
+        route_task: 0,
+        resolve_molecule: 1,
+        resolve_ddi_pair: 1,
+        retrieve_external_evidence: 2,
+        discover_rules: 2,
+        build_features: 3,
+        predict_single: 4,
+        predict_ddi: 4,
+        assess_confidence: 5,
+        retrieve_local_rag: 6,
+        retrieve_elasticsearch_hybrid: 6,
+        expand_evidence_query: 7,
+        parse_reaction: 2,
+        retrieve_mit_template_evidence: 3,
+        retrieve_orderly_condition_evidence: 4,
+        classify_reaction_type: 5,
+        predict_buchwald_hartwig_yield: 5,
+        build_reaction_profile: 6,
+        build_structured_explanation: 8,
+        summarize_evidence_support: 8,
+        build_runtime_report: 9,
+        build_compatible_report: 9,
+        verify_prediction_grounding: 10,
+        verify_citation_grounding: 10,
+        verify_report_schema: 10,
+        reflect_on_report: 11,
+        apply_reflection_feedback: 12,
+        write_artifacts: 13,
+      };
+      const laneByAgent = Object.fromEntries(agentOrder.map((agent, index) => [agent, index]));
+      const occupied = {};
+      const positions = {};
+      nodes.forEach((node, index) => {
+        const tool = node.tool || "";
+        const level = levelByTool[tool] ?? index;
+        const lane = laneByAgent[node.agent] ?? agentOrder.length;
+        const key = `${lane}:${level}`;
+        const offset = occupied[key] || 0;
+        occupied[key] = offset + 1;
+        positions[node.id] = {
+          node,
+          x: labelW + 18 + level * levelGap,
+          y: 42 + lane * laneGap + offset * 68,
+          width: nodeW,
+          height: nodeH,
+        };
+      });
+      const maxLevel = Math.max(...Object.values(levelByTool), 0);
+      const width = labelW + 48 + (maxLevel + 1) * levelGap + nodeW;
+      const height = 60 + agentOrder.length * laneGap;
+      const activeNode = Object.fromEntries(nodes.map(node => [node.id, node.active]));
+      const edgeSvg = edges.map(edge => {
+        const source = positions[edge.source];
+        const target = positions[edge.target];
+        if (!source || !target) return "";
+        const active = edge.active != null ? Boolean(edge.active) : Boolean(activeNode[edge.source] && activeNode[edge.target]);
+        return workflowSvgEdge(source, target, active, edge.condition || "", edge.kind || "forward");
+      }).join("");
+      const laneSvg = agentOrder.map((agent, index) => {
+        const y = 30 + index * laneGap;
+        return `<text x="8" y="${y + 38}" font-size="12" font-weight="700" fill="#4f5b66">${escapeHtml(agent)}</text>
+          <line x1="${labelW}" y1="${y}" x2="${width - 20}" y2="${y}" stroke="#edf0f3" />
+          <line x1="${labelW}" y1="${y + laneGap - 8}" x2="${width - 20}" y2="${y + laneGap - 8}" stroke="#edf0f3" />`;
+      }).join("");
+      return `<div class="workflow-graph-wrap">
+        <div class="workflow-graph-title">Full conditional topology graph</div>
+        <div class="badge-row">
+          <span class="pill">actual forward path</span>
+          <span class="pill warn">repair/backtrack route</span>
+          <span class="pill neutral">inactive route</span>
+        </div>
+        <svg class="workflow-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="Full agent tool topology graph">
+          <defs>${workflowSvgArrowDefs()}</defs>
+          ${laneSvg}
+          ${edgeSvg}
+          ${Object.values(positions).map(item => workflowSvgNode(item.node, item.x, item.y, nodeW, nodeH)).join("")}
+        </svg>
+      </div>`;
+    }
+
+    function workflowSvgArrowDefs() {
+      return `<marker id="workflow-arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#52c41a"></path>
+      </marker>
+      <marker id="workflow-arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#fa8c16"></path>
+      </marker>
+      <marker id="workflow-arrow-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c0cc"></path>
+      </marker>`;
+    }
+
+    function workflowSvgEdge(source, target, active, condition, kind = "forward") {
+      const nodeW = source.width || 164;
+      const nodeH = source.height || 60;
+      const targetH = target.height || nodeH;
+      const sx = source.x + nodeW;
+      const sy = source.y + nodeH / 2;
+      const tx = target.x;
+      const ty = target.y + targetH / 2;
+      const forward = tx >= sx;
+      const c1x = forward ? sx + Math.max(32, (tx - sx) / 2) : sx + 46;
+      const c2x = forward ? tx - Math.max(32, (tx - sx) / 2) : tx - 46;
+      const repair = kind === "repair" || kind === "backtrack";
+      const color = repair ? "#fa8c16" : (active ? "#52c41a" : "#b8c0cc");
+      const marker = repair ? "workflow-arrow-orange" : (active ? "workflow-arrow-green" : "workflow-arrow-gray");
+      const dash = active ? "" : ` stroke-dasharray="${repair ? "6 4" : "4 5"}"`;
+      const title = condition ? `<title>${escapeHtml(condition)}</title>` : "";
+      return `<path d="M ${sx} ${sy} C ${c1x} ${sy}, ${c2x} ${ty}, ${tx} ${ty}" fill="none" stroke="${color}" stroke-width="${active ? 2.4 : 1.3}" marker-end="url(#${marker})"${dash}>${title}</path>`;
+    }
+
+    function workflowSvgNode(node, x, y, width, height) {
+      const colors = workflowSvgNodeColors(node.status || "");
+      const label = node.tool || node.label || node.id || "";
+      const agent = node.agent || "";
+      const status = node.status || "";
+      const origin = node.origin_note || "";
+      const duration = node.duration_sec != null ? `${formatNumber(node.duration_sec)}s` : "";
+      return `<g>
+        <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="5" fill="${colors.fill}" stroke="${colors.stroke}" stroke-width="1.4"></rect>
+        <rect x="${x}" y="${y}" width="4" height="${height}" rx="2" fill="${colors.bar}"></rect>
+        <text x="${x + 12}" y="${y + 17}" font-size="12" font-weight="700" fill="#141414">${escapeHtml(shortWorkflowLabel(label, 22))}</text>
+        <text x="${x + 12}" y="${y + 33}" font-size="10.5" fill="#5f6b7a">${escapeHtml(shortWorkflowLabel(agent, 22))}</text>
+        <text x="${x + 12}" y="${y + 48}" font-size="10.5" fill="#5f6b7a">${escapeHtml(shortWorkflowLabel([status, origin, duration].filter(Boolean).join(" · "), 28))}</text>
+      </g>`;
+    }
+
+    function workflowSvgNodeColors(status) {
+      if (status === "completed" || status === "fallback_completed") return {fill: "#ffffff", stroke: "#d9f7be", bar: "#52c41a"};
+      if (status === "planned_inactive") return {fill: "#e6f4ff", stroke: "#91caff", bar: "#1677ff"};
+      if (status === "failed" || status === "guard_blocked" || status === "guard_revision_blocked") return {fill: "#fff1f0", stroke: "#ffa39e", bar: "#ff4d4f"};
+      return {fill: "#fafafa", stroke: "#d9d9d9", bar: "#d9d9d9"};
+    }
+
+    function shortWorkflowLabel(value, maxLength) {
+      const text = String(value || "");
+      return text.length > maxLength ? `${text.slice(0, Math.max(0, maxLength - 1))}…` : text;
+    }
+
+    function workflowFlow(nodes) {
+      return `<div class="workflow-flow">${(nodes || []).map((node, index) => `
+        ${index ? `<span class="workflow-arrow">→</span>` : ""}
+        <div class="workflow-node ${escapeHtml(node.status || "")}">
+          <b>${escapeHtml(node.label || node.tool || node.id || "")}</b>
+          ${node.agent ? `<span>${escapeHtml(node.agent)}</span>` : ""}
+          ${node.tool ? `<span>${escapeHtml(node.tool)}</span>` : ""}
+          ${node.status ? `<span>${escapeHtml(node.status)}</span>` : ""}
+          ${node.origin_note ? `<span>${escapeHtml(node.origin_note)}</span>` : ""}
+          ${node.duration_sec != null ? `<span>${formatNumber(node.duration_sec)}s</span>` : ""}
+          ${node.goal ? `<span>${escapeHtml(node.goal)}</span>` : ""}
+          ${node.rationale ? `<span>${escapeHtml(node.rationale)}</span>` : ""}
+          ${node.error ? `<span class="bad">${escapeHtml(node.error)}</span>` : ""}
+        </div>
+      `).join("")}</div>`;
+    }
+
+    function workflowTopology(topology) {
+      const lanes = (topology || {}).lanes || [];
+      if (!lanes.length) return `<div class="workflow-empty">No topology returned.</div>`;
+      return `<div class="stack">
+        <div class="badge-row">
+          <span class="pill">completed</span>
+          <span class="pill neutral">planned inactive</span>
+          <span class="pill neutral">inactive</span>
+          <span class="pill danger">failed</span>
+        </div>
+        ${lanes.map(lane => `
+          <div class="block">
+            <h2>${escapeHtml(lane.agent || "")}</h2>
+            ${workflowNodeGrid(lane.nodes || [])}
+          </div>
+        `).join("")}
+        <details class="raw-toggle"><summary>Possible conditional edges</summary>
+          <table class="table">
+            <thead><tr><th>From</th><th>To</th><th>Condition</th></tr></thead>
+            <tbody>${((topology || {}).edges || []).map(edge => `
+              <tr>
+                <td class="mono">${escapeHtml(edge.source || "")}</td>
+                <td class="mono">${escapeHtml(edge.target || "")}</td>
+                <td>${escapeHtml(edge.condition || "")}</td>
+              </tr>
+            `).join("")}</tbody>
+          </table>
+        </details>
+      </div>`;
+    }
+
+    function workflowNodeGrid(nodes) {
+      return `<div class="workflow-flow">${(nodes || []).map(node => `
+        <div class="workflow-node ${escapeHtml(node.status || "")}">
+          <b>${escapeHtml(node.label || node.tool || node.id || "")}</b>
+          ${node.agent ? `<span>${escapeHtml(node.agent)}</span>` : ""}
+          ${node.tool ? `<span>${escapeHtml(node.tool)}</span>` : ""}
+          ${node.status ? `<span>${escapeHtml(node.status)}</span>` : ""}
+          ${node.origin_note ? `<span>${escapeHtml(node.origin_note)}</span>` : ""}
+          ${node.duration_sec != null ? `<span>${formatNumber(node.duration_sec)}s</span>` : ""}
+          ${node.description ? `<span>${escapeHtml(node.description)}</span>` : ""}
+          ${node.rationale ? `<span>${escapeHtml(node.rationale)}</span>` : ""}
+          ${node.error ? `<span class="bad">${escapeHtml(node.error)}</span>` : ""}
+        </div>
+      `).join("")}</div>`;
+    }
+
+    function renderTrace(data) {
+      const timeline = data.trace_timeline || data.trace || [];
+      if (!timeline.length) {
+        views.trace.innerHTML = `<div class="status">No trace returned.</div>`;
+        return;
+      }
+      views.trace.innerHTML = `
+        <div class="timeline">
+          ${timeline.map(item => `
+            <div class="timeline-item ${escapeHtml(item.status || "")}">
+              <div class="timeline-dot"></div>
+              <div class="timeline-card">
+                <div class="timeline-title">
+                  <span>${escapeHtml(friendlyStepName(item.step_id || item.tool_name || ""))}</span>
+                  <span class="mono">${escapeHtml(item.status || "")} ${formatNumber(item.duration_sec)}</span>
+                </div>
+                <p>${escapeHtml(item.description || item.message || "")}</p>
+                <div class="badge-row">
+                  ${item.tool_name ? `<span class="pill neutral">${escapeHtml(item.tool_name)}</span>` : ""}
+                  ${item.fallback_tool ? `<span class="pill warn">fallback: ${escapeHtml(item.fallback_tool)}</span>` : ""}
+                </div>
+                ${item.output_summary ? `<pre>${escapeHtml(JSON.stringify(item.output_summary, null, 2))}</pre>` : ""}
+                <details class="raw-toggle"><summary>Raw trace</summary><pre>${escapeHtml(JSON.stringify(item.raw || item, null, 2))}</pre></details>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function moleculeImageGallery(data) {
+      const rows = (data.images || []).filter(img => img.url && ["molecule_image_path", "image_path", "key_substructure_image_path"].includes(img.key));
+      if (!rows.length) return "";
+      return `<div class="block"><h2>Molecule Visualization</h2><div class="molecule-image-grid">${rows.map(img => {
+        const h = img.highlight || {};
+        const caption = img.key === "key_substructure_image_path"
+          ? `${img.label || "Key substructure"}${h.label ? ": " + h.label : ""}`
+          : (img.label || "Molecule visualization");
+        const note = img.key === "key_substructure_image_path" && h.selection_source ? `Selection: ${h.selection_source}` : "";
+        return `<div class="molecule-image-card"><a href="${img.url}" target="_blank"><img src="${img.url}" alt="${escapeHtml(caption)}"></a><div class="caption"><b>${escapeHtml(caption)}</b>${note ? `<br>${escapeHtml(note)}` : ""}</div></div>`;
+      }).join("")}</div></div>`;
+    }
+
+    function renderArtifacts(data) {
+      const release = releaseInfo(data);
+      const imageCards = moleculeImageGallery(data);
+      const rows = (data.files || []).map(file => `
+        <tr>
+          <td>${escapeHtml(file.label || file.key || "")}</td>
+          <td class="mono">${escapeHtml(file.path || "")}</td>
+          <td>${file.url ? `<a href="${file.url}" target="_blank" rel="noreferrer">open</a>` : "not available"}</td>
+        </tr>
+      `).join("");
+      const imageRows = (data.images || []).map(file => `
+        <tr>
+          <td>${escapeHtml(file.label || file.key || "")}</td>
+          <td class="mono">${escapeHtml(file.path || "")}</td>
+          <td>${file.url ? `<a href="${file.url}" target="_blank" rel="noreferrer">open</a>` : "not available"}</td>
+        </tr>
+      `).join("");
+      views.artifacts.innerHTML = `
+        <div class="stack">
+          <div class="block"><h2>Release Index</h2><div class="kv">${kv("Index", release.index_name || "")}${kv("Documents", release.document_count ?? "")}${kv("Dense", release.embedding_enabled ? "yes" : "")}${kv("Acceptance", release.acceptance_status || "")}${kv("20-50 cases", release.expanded_acceptance || "deferred")}</div></div>
+          ${imageCards || `<div class="block"><h2>Molecule Visualization</h2><p>No images.</p></div>`}
+          <div class="block"><h2>Files</h2>${rows ? `<table class="table"><thead><tr><th>Label</th><th>Path</th><th>Link</th></tr></thead><tbody>${rows}</tbody></table>` : "<p>No files.</p>"}</div>
+        </div>
+      `;
+    }
+
+    function capabilityInline(data) {
+      const items = ((data.capability_summary || {}).items || []);
+      if (!items.length) return "";
+      return items.map(item => `${item.label}: ${item.requested ? "requested" : "not requested"} / ${item.used ? "used" : "not used"}`).join(" · ");
+    }
+
+    function capabilityTable(data) {
+      const summary = data.capability_summary || {};
+      const items = summary.items || [];
+      if (!items.length) return "";
+      const rows = items.map(item => `
+        <tr>
+          <td>${escapeHtml(item.label || item.key || "")}</td>
+          <td>${item.requested ? "yes" : "no"}</td>
+          <td>${item.used ? "yes" : "no"}</td>
+          <td>${escapeHtml(item.status || "")}</td>
+          <td>${escapeHtml(item.reason || "")}</td>
+        </tr>
+      `).join("");
+      return `<div class="block"><h2>Capabilities</h2>
+        <div class="kv">${kv("Feature set requested", summary.feature_set_requested || "")}${kv("Feature set actual", summary.feature_set_actual || "")}</div>
+        <table class="table"><thead><tr><th>Capability</th><th>Requested</th><th>Used</th><th>Status</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table>
+      </div>`;
+    }
+
+    function releaseInfo(data) {
+      return data.release_info || {};
+    }
+
+    function metric(label, value) {
+      return `<div class="metric"><b>${escapeHtml(label)}</b><span>${escapeHtml(String(value ?? ""))}</span></div>`;
+    }
+
+    function kv(label, value) {
+      return `<b>${escapeHtml(label)}</b><span>${escapeHtml(String(value ?? ""))}</span>`;
+    }
+
+    function titleCase(value) {
+      return String(value || "").replaceAll("_", " ").replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function formatNumber(value) {
+      if (typeof value !== "number") return value ?? "";
+      return Number.isFinite(value) ? value.toFixed(3) : "";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>

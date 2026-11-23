@@ -1,0 +1,31 @@
+task_type: admet_prediction
+dataset_name: Pgp_Broccatelli
+data_path: data/tdc/Pgp_Broccatelli/Pgp_Broccatelli.csv
+split_type: scaffold
+feature_set: all_features
+model_type: random_forest
+use_llm_rules: true
+use_imagemol: true
+use_smiles_encoder: true
+use_visual_semantic: true
+use_evidence_retrieval: true
+imagemol_checkpoint_path: checkpoints/imagemol/ImageMol.pth.tar
+smiles_encoder_model_name: checkpoints/chemberta2/DeepChem-ChemBERTa-77M-MTR
+smiles_encoder_device: auto
+smiles_pooling: cls
+smiles_local_files_only: true
+llm_profile: qwen_flash
+use_mllm_visual_semantic: false
+mllm_profile: kimi_k2_6_bailian
+output_dir: outputs/tdc/Pgp_Broccatelli
+random_seed: 13
+smiles_column: smiles
+label_column: label
+tdc_collection: ADME
+tdc_task_mode: classification
+tdc_label_description: P-glycoprotein inhibition
+positive_label: 1
+negative_label: 0
+positive_label_meaning: P-glycoprotein inhibition
+negative_label_meaning: not P-glycoprotein inhibition
+decision_threshold: 0.5

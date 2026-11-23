@@ -1,0 +1,262 @@
+{
+  "passed": true,
+  "entrypoints_checked": 50,
+  "results": [
+    {
+      "entrypoint": "scripts/audit_balanced100_scientific_performance.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/audit_evidence_coverage.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/audit_evidence_relevance_cases.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/audit_hybrid_retrieval_cases.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/backfill_evidence_cases.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_balanced100_casefile.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_ddi_rag_corpus.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_evidence_manifest.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_paper_evidence_qc.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_reaction_evidence_index.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_real_rag_corpus.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/build_scientific_balanced100_casefile.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/check_elasticsearch.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/download_rag_embedding_model.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/download_tdc_admet.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/download_tdc_ddi.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/index_evidence_es.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_agentm_ablation.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_benchmark_suite.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_evidence_acceptance_suite.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_moleculenet_benchmark.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_multi_agent.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_reaction_agent.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_reaction_benchmark.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_reaction_model_benchmark.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_selected_moleculenet_multiseed.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_selected_tdc_multiseed.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/run_web_demo.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/smoke_elasticsearch_hybrid.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/summarize_balanced100_results.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/summarize_orchestration_reflection.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/summarize_paper_evidence_qc.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/train_admet.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/train_ddi.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/train_property.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "scripts/train_reaction_models.py",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.run_matrix",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.build_clean_manifest",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.build_stress_manifest",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.build_open_task_manifest",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.build_multi_turn_manifest",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.prepare_single_build_stress",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.preflight_single_build_stress",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.prepare_depth_jobs",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.multi_turn_runner",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.canonicalize_runs",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.offline_evaluator",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.statistics",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.render_outputs",
+      "passed": true,
+      "error": null
+    },
+    {
+      "entrypoint": "experiments.agentm_reliability.render_manuscript_composites",
+      "passed": true,
+      "error": null
+    }
+  ],
+  "network_operations_blocked": 0,
+  "api_calls_sent": 0,
+  "import_roots": {
+    "agentm": "agentm/__init__.py",
+    "agentm.runtime": "agentm/runtime/__init__.py"
+  }
+}

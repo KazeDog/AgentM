@@ -1,0 +1,355 @@
+{
+  "case_file": "configs/molecular_safety_scientific_cases.jsonl",
+  "seed": 20260724,
+  "selection_protocol": {
+    "label_independent_sampling": true,
+    "admet": "Equal dataset quota; uniform seeded sampling from canonical molecules found exclusively in each selected model's scaffold test split with one consistent label.",
+    "ddi": "Uniform seeded sampling from ordered pairs in the cold-drug model test split for which neither molecule occurs in the cold-model training split.",
+    "important": "The benchmark uses equal five-case quotas across the ten selected ADMET datasets."
+  },
+  "counts": {
+    "n_cases": 100,
+    "category_counts": {
+      "admet": 50,
+      "ddi": 50
+    },
+    "mode_counts": {
+      "classification": 75,
+      "regression": 25
+    },
+    "dataset_counts": {
+      "AMES": 5,
+      "BBB_Martins": 5,
+      "DILI": 5,
+      "hERG": 5,
+      "CYP2C19_Veith": 5,
+      "Caco2_Wang": 5,
+      "Lipophilicity_AstraZeneca": 5,
+      "Solubility_AqSolDB": 5,
+      "LD50_Zhu": 5,
+      "Clearance_Microsome_AZ": 5,
+      "DDI": 50
+    },
+    "gold_split_counts": {
+      "test": 100
+    }
+  },
+  "selection": {
+    "admet": {
+      "AMES": {
+        "candidate_count": 728,
+        "selected_count": 5,
+        "mode": "classification",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/AMES"
+      },
+      "BBB_Martins": {
+        "candidate_count": 203,
+        "selected_count": 5,
+        "mode": "classification",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/BBB_Martins"
+      },
+      "DILI": {
+        "candidate_count": 48,
+        "selected_count": 5,
+        "mode": "classification",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/DILI"
+      },
+      "hERG": {
+        "candidate_count": 66,
+        "selected_count": 5,
+        "mode": "classification",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/hERG"
+      },
+      "CYP2C19_Veith": {
+        "candidate_count": 1267,
+        "selected_count": 5,
+        "mode": "classification",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/CYP2C19_Veith"
+      },
+      "Caco2_Wang": {
+        "candidate_count": 91,
+        "selected_count": 5,
+        "mode": "regression",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/Caco2_Wang"
+      },
+      "Lipophilicity_AstraZeneca": {
+        "candidate_count": 420,
+        "selected_count": 5,
+        "mode": "regression",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/Lipophilicity_AstraZeneca"
+      },
+      "Solubility_AqSolDB": {
+        "candidate_count": 997,
+        "selected_count": 5,
+        "mode": "regression",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/Solubility_AqSolDB"
+      },
+      "LD50_Zhu": {
+        "candidate_count": 739,
+        "selected_count": 5,
+        "mode": "regression",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/LD50_Zhu"
+      },
+      "Clearance_Microsome_AZ": {
+        "candidate_count": 111,
+        "selected_count": 5,
+        "mode": "regression",
+        "split_strategy": "scaffold",
+        "data_hash_verified": true,
+        "source_id": "deterministic_split_reconstruction:outputs/tdc/Clearance_Microsome_AZ"
+      }
+    },
+    "ddi": {
+      "candidate_count": 1784,
+      "selected_count": 50,
+      "split_strategy": "cold_drug",
+      "training_drug_overlap_required": 0,
+      "source_id": "saved_model_split:outputs/drugbank_ddi_full_low_token/cold_drug_all_features",
+      "data_hash_verified": true
+    }
+  },
+  "selected_label_counts": {
+    "AMES": {
+      "1": 2,
+      "0": 3
+    },
+    "BBB_Martins": {
+      "1": 3,
+      "0": 2
+    },
+    "CYP2C19_Veith": {
+      "0": 2,
+      "1": 3
+    },
+    "Caco2_Wang": {
+      "-4.5418172": 1,
+      "-5.1500001": 1,
+      "-4.0500002": 1,
+      "-5.8200002": 1,
+      "-4.4490995": 1
+    },
+    "Clearance_Microsome_AZ": {
+      "17.38": 1,
+      "50.5": 1,
+      "150.0": 2,
+      "6.0": 1
+    },
+    "DDI": {
+      "70": 3,
+      "47": 10,
+      "73": 6,
+      "49": 12,
+      "75": 2,
+      "9": 2,
+      "6": 1,
+      "37": 3,
+      "71": 1,
+      "11": 1,
+      "24": 1,
+      "4": 1,
+      "16": 1,
+      "54": 1,
+      "58": 1,
+      "53": 1,
+      "57": 1,
+      "46": 1,
+      "60": 1
+    },
+    "DILI": {
+      "0.0": 1,
+      "1.0": 4
+    },
+    "LD50_Zhu": {
+      "2.481": 1,
+      "1.966": 1,
+      "2.121": 1,
+      "1.936": 1,
+      "2.059": 1
+    },
+    "Lipophilicity_AstraZeneca": {
+      "-0.55": 1,
+      "1.9": 1,
+      "1.7": 1,
+      "2.26": 1,
+      "1.6": 1
+    },
+    "Solubility_AqSolDB": {
+      "-3.7064": 1,
+      "-3.535": 1,
+      "-5.1467": 1,
+      "-2.82": 1,
+      "-1.39": 1
+    },
+    "hERG": {
+      "0.0": 4,
+      "1.0": 1
+    }
+  },
+  "reference_model_performance": {
+    "scope": "Saved supervised-model evaluation artifacts; ADMET values cover each model's full scaffold test split, while DDI also includes the exact double-cold subset and selected 50-case subset.",
+    "admet_full_test_by_dataset": {
+      "AMES": {
+        "mode": "classification",
+        "n_test": 728,
+        "split_strategy": "scaffold",
+        "accuracy": 0.679945054945055,
+        "f1": 0.7054361567635904,
+        "precision": 0.6105032822757112,
+        "recall": 0.8353293413173652,
+        "roc_auc": 0.79230371743822,
+        "aupr": 0.7836675419172393
+      },
+      "BBB_Martins": {
+        "mode": "classification",
+        "n_test": 203,
+        "split_strategy": "scaffold",
+        "accuracy": 0.896551724137931,
+        "f1": 0.934984520123839,
+        "precision": 0.8988095238095238,
+        "recall": 0.9741935483870968,
+        "roc_auc": 0.933266129032258,
+        "aupr": 0.9754194624344459
+      },
+      "DILI": {
+        "mode": "classification",
+        "n_test": 48,
+        "split_strategy": "scaffold",
+        "accuracy": 0.7916666666666666,
+        "f1": 0.8214285714285714,
+        "precision": 0.7931034482758621,
+        "recall": 0.8518518518518519,
+        "roc_auc": 0.8853615520282188,
+        "aupr": 0.905069747821464
+      },
+      "hERG": {
+        "mode": "classification",
+        "n_test": 66,
+        "split_strategy": "scaffold",
+        "accuracy": 0.7424242424242424,
+        "f1": 0.8089887640449438,
+        "precision": 0.72,
+        "recall": 0.9230769230769231,
+        "roc_auc": 0.8627730294396961,
+        "aupr": 0.9005959678907303
+      },
+      "CYP2C19_Veith": {
+        "mode": "classification",
+        "n_test": 1267,
+        "split_strategy": "scaffold",
+        "accuracy": 0.760852407261247,
+        "f1": 0.7855626326963907,
+        "precision": 0.7974137931034483,
+        "recall": 0.7740585774058577,
+        "roc_auc": 0.8373602130087485,
+        "aupr": 0.8450611637386166
+      },
+      "Caco2_Wang": {
+        "mode": "regression",
+        "n_test": 91,
+        "split_strategy": "scaffold",
+        "mae": 0.40624878145494514,
+        "rmse": 0.488562755401591,
+        "r2": 0.613819470943206
+      },
+      "Lipophilicity_AstraZeneca": {
+        "mode": "regression",
+        "n_test": 420,
+        "split_strategy": "scaffold",
+        "mae": 0.571945,
+        "rmse": 0.7606145506697043,
+        "r2": 0.5897512140967569
+      },
+      "Solubility_AqSolDB": {
+        "mode": "regression",
+        "n_test": 999,
+        "split_strategy": "scaffold",
+        "mae": 0.997455422904334,
+        "rmse": 1.3463848134533183,
+        "r2": 0.6571551000992064
+      },
+      "LD50_Zhu": {
+        "mode": "regression",
+        "n_test": 739,
+        "split_strategy": "scaffold",
+        "mae": 0.574222465622785,
+        "rmse": 0.7391500375181368,
+        "r2": 0.17912400654020577
+      },
+      "Clearance_Microsome_AZ": {
+        "mode": "regression",
+        "n_test": 111,
+        "split_strategy": "scaffold",
+        "mae": 32.19608738738738,
+        "rmse": 40.80763075357905,
+        "r2": 0.19537651639859221
+      }
+    },
+    "ddi": {
+      "scope": "saved supervised-model prediction artifacts",
+      "model_dir": "outputs/drugbank_ddi_full_low_token/cold_drug_all_features",
+      "full_cold_test": {
+        "n": 31468,
+        "accuracy": 0.6798652599466124,
+        "balanced_accuracy": 0.7036514070224332,
+        "macro_f1": 0.5520824323218397,
+        "weighted_f1": 0.6739299030971212,
+        "macro_precision": 0.573649206086696,
+        "macro_recall": 0.6779080628630759,
+        "top3_accuracy": 0.8905872632515571
+      },
+      "double_cold_test": {
+        "n": 1784,
+        "n_correct": 875,
+        "accuracy": 0.490471,
+        "accuracy_wilson_95ci": [
+          0.467319,
+          0.513664
+        ],
+        "balanced_accuracy": 0.37022,
+        "macro_precision": 0.389594,
+        "macro_recall": 0.333198,
+        "macro_f1": 0.34039,
+        "weighted_f1": 0.466009,
+        "n_labels_true": 45,
+        "n_labels_predicted": 38,
+        "top3_accuracy": 0.787556
+      },
+      "selected_50_double_cold": {
+        "n": 50,
+        "n_correct": 28,
+        "accuracy": 0.56,
+        "accuracy_wilson_95ci": [
+          0.42306,
+          0.688378
+        ],
+        "balanced_accuracy": 0.412281,
+        "macro_precision": 0.398413,
+        "macro_recall": 0.412281,
+        "macro_f1": 0.388854,
+        "weighted_f1": 0.515647,
+        "n_labels_true": 19,
+        "n_labels_predicted": 11,
+        "top3_accuracy": 0.84
+      }
+    }
+  },
+  "recommended_run": "PYTHONPATH=.:../agentM python scripts/run_benchmark_suite.py --case-file configs/molecular_safety_scientific_cases.jsonl --output-root outputs/balanced100_scientific --feature-set all_features --no-use-llm-orchestrator --no-use-llm-reasoning --no-require-real-rag --retrieval-backend local"
+}

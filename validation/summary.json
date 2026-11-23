@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "project": "AgentM",
+  "unified_python_package": "agentm",
+  "offline_regression_tests_passed": 162,
+  "repository_layout_tests_passed": 10,
+  "evidence_and_web_tests_passed": 37,
+  "total_offline_tests_passed": 209,
+  "command_entrypoints_checked": 50,
+  "web_read_only_checks_passed": 4,
+  "case_records_compared": 632,
+  "unexpected_case_content_changes": 0,
+  "relocation_passed": true,
+  "api_calls_sent": 0,
+  "gpu_jobs_launched": 0,
+  "license": "MIT"
+}

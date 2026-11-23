@@ -1,0 +1,12 @@
+extends: multi_turn_tasks.yaml
+matrix:
+  orchestrators: [heuristic]
+  reflection: [false]
+runtime:
+  retrieval_backend: local
+  require_real_rag: false
+  require_llm_orchestrator: false
+outputs:
+  root: outputs/agentm_reliability_smoke
+paths:
+  outputs_root: outputs/agentm_reliability_smoke

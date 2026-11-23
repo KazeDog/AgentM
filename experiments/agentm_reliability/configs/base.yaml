@@ -1,0 +1,71 @@
+experiment:
+  name: agentm_reliability
+  seed: 2026
+  temperature: 0.0
+  timeout_seconds: 300
+  llm_timeout_seconds: 60
+  max_retries: 0
+  overwrite_raw_runs: false
+  bootstrap_resamples: 10000
+
+paths:
+  molecular_safety_manifest: configs/molecular_safety_cases.jsonl
+  molecular_safety_scientific_manifest: configs/molecular_safety_scientific_cases.jsonl
+  reaction_manifest: configs/reaction_cases.jsonl
+  reaction_data_root: ${AGENTM_REACTION_DATA_ROOT:-data/reaction_sources}
+  reaction_model_dir: outputs/reaction_models_full
+  reaction_index_dir: data/reaction_indices
+  outputs_root: outputs/agentm_reliability
+
+runtime:
+  mode: full
+  max_rounds: 20
+  feature_set: all_features
+  auto_model: true
+  require_real_model: true
+  require_real_rag: true
+  require_llm_orchestrator: true
+  llm_orchestrator_max_retries: 2
+  llm_orchestrator_retry_backoff_seconds: 1.0
+  use_llm_reasoning: false
+  require_llm_reasoning: false
+  enable_fallbacks: false
+  retrieval_backend: es
+  es_url: ${AGENTM_ES_URL:-http://127.0.0.1:9200}
+  es_request_timeout_seconds: 60
+  es_max_retries: 1
+  preflight_top_k: 3
+  preflight_reject_warnings: true
+  max_llm_calls_per_run: 40
+  max_total_tokens_per_run: 140000
+  min_evidence: 1
+  max_reflection_rounds: 1
+
+matrix:
+  orchestrators: [heuristic, llm]
+  reflection: [false, true]
+
+stress_set:
+  case_count: 64
+  per_task_group: 16
+  per_fault_type: 8
+  fault_types:
+    - citation_mismatch
+    - entity_or_endpoint_mismatch
+    - irrelevant_or_weak_evidence
+    - missing_field_or_overclaim
+    - conflicting_evidence
+    - plausible_but_wrong_prediction
+    - prediction_tool_or_service_failure
+    - no_direct_evidence_or_ambiguous_entity
+
+open_tasks:
+  case_count: 30
+  recoverable_fault_count: 10
+
+multi_turn_tasks:
+  case_count: 20
+  turns_per_case: 2
+
+outputs:
+  root: outputs/agentm_reliability

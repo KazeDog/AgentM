@@ -1,0 +1,18 @@
+# Direct packages observed in the Linux / Python 3.10 validation environment.
+# Validated dependency versions for Linux and Python 3.10.
+# Select/install a hardware-compatible PyTorch build first if needed.
+numpy==1.26.4
+pandas==2.3.3
+pillow==12.2.0
+rdkit==2024.9.6
+requests==2.32.3
+scikit-learn==1.6.1
+scipy==1.13.1
+PyYAML==6.0.2
+torch==2.8.0
+torchvision==0.23.0
+transformers==4.41.0
+langgraph==1.2.4
+fastapi==0.136.3
+uvicorn==0.47.0
+matplotlib==3.10.9

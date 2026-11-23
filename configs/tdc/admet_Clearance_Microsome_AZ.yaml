@@ -1,0 +1,26 @@
+task_type: admet_prediction
+dataset_name: Clearance_Microsome_AZ
+data_path: data/tdc/Clearance_Microsome_AZ/Clearance_Microsome_AZ.csv
+split_type: scaffold
+feature_set: all_features
+model_type: random_forest
+use_llm_rules: true
+use_imagemol: true
+use_smiles_encoder: true
+use_visual_semantic: true
+use_evidence_retrieval: true
+imagemol_checkpoint_path: checkpoints/imagemol/ImageMol.pth.tar
+smiles_encoder_model_name: checkpoints/chemberta2/DeepChem-ChemBERTa-77M-MTR
+smiles_encoder_device: auto
+smiles_pooling: cls
+smiles_local_files_only: true
+llm_profile: qwen_flash
+use_mllm_visual_semantic: false
+mllm_profile: kimi_k2_6_bailian
+output_dir: outputs/tdc/Clearance_Microsome_AZ
+random_seed: 13
+smiles_column: smiles
+label_column: label
+tdc_collection: ADME
+tdc_task_mode: regression
+tdc_label_description: microsome clearance

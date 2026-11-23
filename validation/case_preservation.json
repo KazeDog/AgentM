@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "case_files_compared": 11,
+  "records_compared": 632,
+  "leaf_values_compared": 11438,
+  "unexpected_changes": [],
+  "descriptive_identifier_path_and_hash_changes": {
+    "gold_source": 144,
+    "notes": 144,
+    "source_manifest": 100,
+    "base_case_hash": 44,
+    "source": 44,
+    "case_id": 64,
+    "stress_case_id": 64
+  },
+  "scope": "all packaged JSON-lines cases; requests, molecules, endpoints, targets, seeds and fault settings preserved",
+  "api_calls_sent": 0
+}

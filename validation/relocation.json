@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "source_identity_stable_after_move": true,
+  "offline_regression_tests": 162,
+  "layout_tests": 10,
+  "support_tests": 37,
+  "command_entrypoints": 50,
+  "read_only_web_routes_checked": 4,
+  "checks_repeated_in_unrelated_temporary_directory": true,
+  "external_checkout_imports": 0,
+  "api_calls_sent": 0,
+  "gpu_jobs_launched": 0
+}

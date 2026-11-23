@@ -1,0 +1,46 @@
+task_type: ddi_prediction
+dataset_name: DrugBank
+data_path: data/tdc/DrugBank/DrugBank_agentm_resolved.csv
+drug_a_smiles_column: drug_a_smiles
+drug_b_smiles_column: drug_b_smiles
+drug_a_name_column: drug_a_name
+drug_b_name_column: drug_b_name
+label_column: label
+label_mode: multiclass_interaction_type
+split_type: random
+feature_set: fingerprint_only
+model_type: sgd_classifier
+model_params:
+  max_iter: 5
+  tol: 0.001
+  n_jobs: -1
+  average: true
+  scaler: maxabs
+cache_unique_drug_features: true
+single_drug_feature_cache_dir: outputs/drugbank_ddi_full_low_token/_single_drug_feature_cache/fingerprint_only
+single_drug_feature_cache_read: true
+single_drug_feature_cache_write: true
+task_level_rule_cache_dir: outputs/drugbank_ddi_full_low_token/_task_level_rule_cache
+task_level_rule_cache_read: true
+task_level_rule_cache_write: true
+use_llm_rules: false
+llm_profile: qwen_flash
+use_mllm_visual_semantic: false
+use_external_evidence: false
+use_narrative_llm: false
+use_evidence_retrieval: false
+imagemol_checkpoint_path: checkpoints/imagemol/ImageMol.pth.tar
+use_smiles_encoder: false
+smiles_encoder_model_name: checkpoints/chemberta2/DeepChem-ChemBERTa-77M-MTR
+smiles_encoder_device: auto
+smiles_pooling: cls
+smiles_local_files_only: true
+mllm_profile: kimi_k2_6_bailian
+output_dir: outputs/drugbank_ddi_full_low_token/random_fingerprint_only
+random_seed: 13
+token_policy:
+  per_sample_llm_calls: false
+  per_sample_mllm_calls: false
+  llm_rules_scope: disabled_for_fingerprint_baseline
+  case_study_llm_only: true
+  evidence_retrieval_scope: case_study_or_low_confidence_only

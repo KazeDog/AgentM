@@ -1,0 +1,12 @@
+extends: stress_matrix_controlled.yaml
+matrix:
+  orchestrators: [heuristic]
+  reflection: [false, true]
+runtime:
+  retrieval_backend: local
+  require_real_rag: false
+  require_llm_orchestrator: false
+outputs:
+  root: outputs/agentm_reliability_smoke
+paths:
+  outputs_root: outputs/agentm_reliability_smoke

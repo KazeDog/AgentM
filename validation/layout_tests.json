@@ -1,0 +1,19 @@
+{
+  "scope": "synthetic-fixture offline regression",
+  "default_profile_exclusion": "Resource-dependent integration tests require external assets. Required-LLM/reflection control is included in the offline profile. See KNOWN_ISSUES.md",
+  "modules": [
+    "test_repository_layout"
+  ],
+  "tests_run": 10,
+  "failures": [],
+  "errors": [],
+  "skipped": [],
+  "passed": true,
+  "network_operations_blocked": 0,
+  "api_calls_sent": 0,
+  "gpu_visible": false,
+  "import_roots": {
+    "agentm": "agentm/__init__.py",
+    "agentm.runtime": "agentm/runtime/__init__.py"
+  }
+}

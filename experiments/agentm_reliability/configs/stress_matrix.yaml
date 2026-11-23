@@ -1,0 +1,6 @@
+extends: base.yaml
+dataset_group: stress
+manifest: experiments/agentm_reliability/manifests/stress.jsonl
+matrix:
+  orchestrators: [heuristic, llm]
+  reflection: [false, true]

@@ -1,0 +1,16 @@
+extends: base.yaml
+dataset_group: stress
+manifest: experiments/agentm_reliability/manifests/stress_controlled.jsonl
+matrix:
+  orchestrators: [heuristic, llm]
+  reflection: [false, true]
+runtime:
+  # Every mutable/default-selected resource is made explicit for the
+  # prospective 64-case x 4-setting causal rerun.
+  llm_profile: qwen_flash
+  es_index_name: agentm_evidence_stress_single_build_20260813
+  rag_embedding_model_name: checkpoints/rag/scibert_scivocab_uncased
+  # Historical maxima were 17 calls and 90,305 tokens.  These prospective
+  # limits retain margin while reducing the full-panel worst-case exposure.
+  max_llm_calls_per_run: 32
+  max_total_tokens_per_run: 120000

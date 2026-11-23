@@ -1,0 +1,10 @@
+extends: base.yaml
+dataset_group: open_task
+manifest: experiments/agentm_reliability/manifests/open_tasks.jsonl
+matrix:
+  orchestrators: [heuristic, llm]
+  reflection: [false]
+runtime:
+  max_rounds: 32
+  max_llm_calls_per_run: 26
+  max_total_tokens_per_run: 100000

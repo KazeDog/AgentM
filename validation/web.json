@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": {
+    "index_html": true,
+    "health": true,
+    "empty_run_list": true,
+    "project_name_api_metadata": true
+  },
+  "api_calls_sent": 0,
+  "network_operations_blocked": 0,
+  "import_roots": {
+    "agentm": "agentm/__init__.py",
+    "agentm.runtime": "agentm/runtime/__init__.py"
+  },
+  "scope": "in-process read-only web routes; no scientific execution"
+}

@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "api_calls_sent": 0,
+  "network_attempts": 0,
+  "scope": "unsupported-request guard and report serialization",
+  "import_roots": {
+    "agentm": "agentm/__init__.py",
+    "agentm.runtime": "agentm/runtime/__init__.py"
+  }
+}
